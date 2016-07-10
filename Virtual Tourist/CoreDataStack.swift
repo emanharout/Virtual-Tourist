@@ -89,6 +89,17 @@ struct CoreDataStack {
                                 options : [NSObject : AnyObject]?) throws{
         
         try coord.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: dbURL, options: nil)
-        
     }
 }
+
+
+
+extension CoreDataStack {
+    
+    func saveContext() throws{
+        if context.hasChanges {
+            try context.save()
+        }
+    }
+}
+

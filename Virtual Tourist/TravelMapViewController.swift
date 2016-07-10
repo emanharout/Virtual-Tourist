@@ -24,13 +24,11 @@ class TravelMapViewController: UIViewController {
         let gestureRec = UILongPressGestureRecognizer(target: self, action: #selector(addPin))
         travelMapView.addGestureRecognizer(gestureRec)
         
-        setToLastMapRegion()
+        setMapToLastPosition()
     }
-    
-    
-    
 
 }
+
 
 
 extension TravelMapViewController: MKMapViewDelegate {
@@ -57,6 +55,21 @@ extension TravelMapViewController: MKMapViewDelegate {
         return region
     }
     
+    func setMapToLastPosition() {
+        if let latitude = NSUserDefaults.standardUserDefaults().valueForKey("centerCoordinateLatitude") as? CLLocationDegrees,
+            longitude = NSUserDefaults.standardUserDefaults().valueForKey("centerCoordinateLongitude") as? CLLocationDegrees,
+            altitude = NSUserDefaults.standardUserDefaults().valueForKey("mapViewAltitude") as? CLLocationDistance {
+            
+            travelMapView.centerCoordinate = CLLocationCoordinate2DMake(latitude, longitude)
+            travelMapView.camera.altitude = altitude
+            
+        } else {
+            print("Could not set map to last map region")
+        }
+    }
+    
+    
+    // MARK: Delegate Methods
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
         if let annotation = view.annotation {
             annotation.coordinate
@@ -88,21 +101,6 @@ extension TravelMapViewController: MKMapViewDelegate {
         NSUserDefaults.standardUserDefaults().setDouble(altitude, forKey: "mapViewAltitude")
         
     }
-    
-    func setToLastMapRegion() {
-        if let latitude = NSUserDefaults.standardUserDefaults().valueForKey("centerCoordinateLatitude") as? CLLocationDegrees,
-            longitude = NSUserDefaults.standardUserDefaults().valueForKey("centerCoordinateLongitude") as? CLLocationDegrees,
-            altitude = NSUserDefaults.standardUserDefaults().valueForKey("mapViewAltitude") as? CLLocationDistance {
-            
-            travelMapView.centerCoordinate = CLLocationCoordinate2DMake(latitude, longitude)
-            travelMapView.camera.altitude = altitude
-            
-        } else {
-            return
-        }
-
-    }
-    
 }
 
 
