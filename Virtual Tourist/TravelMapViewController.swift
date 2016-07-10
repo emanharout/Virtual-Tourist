@@ -24,7 +24,7 @@ class TravelMapViewController: UIViewController {
         let gestureRec = UILongPressGestureRecognizer(target: self, action: #selector(addPin))
         travelMapView.addGestureRecognizer(gestureRec)
         
-        
+        setToLastMapRegion()
     }
     
     
@@ -41,28 +41,26 @@ extension TravelMapViewController: MKMapViewDelegate {
                 let longTapPoint = gestureRecognizer.locationInView(travelMapView)
                 let coordinate = travelMapView.convertPoint(longTapPoint, toCoordinateFromView: travelMapView)
                 
-
                 let annotation = Pin(latitude: coordinate.latitude, longitude: coordinate.longitude, context: stack.context)
-                annotation.latitude = coordinate.latitude
-                annotation.longitude = coordinate.longitude
                 
                 travelMapView.addAnnotation(annotation)
-                
-                setRegionToAnnotation(annotation)
+                let region = makeRegionWithAnnotation(annotation)
+                travelMapView.setRegion(region, animated: true)
             }
         }
     }
     
-    func setRegionToAnnotation(annotation: MKAnnotation) {
+    func makeRegionWithAnnotation(annotation: MKAnnotation) -> MKCoordinateRegion {
         let center = annotation.coordinate
-        let span = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+        let span = MKCoordinateSpanMake(0.05, 0.05)
         let region = MKCoordinateRegion(center: center, span: span)
-        travelMapView.setRegion(region, animated: true)
-
+        return region
     }
     
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
-        if let coordinate = view.annotation?.coordinate {
+        if let annotation = view.annotation {
+            annotation.coordinate
+            
             print("pass mapView Region")
         }
     }
@@ -79,5 +77,66 @@ extension TravelMapViewController: MKMapViewDelegate {
         return annotView
     }
     
+    func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        let region = mapView.region
+        let latitude = region.center.latitude
+        let longitude = region.center.longitude
+        let altitude = mapView.camera.altitude
+        
+        NSUserDefaults.standardUserDefaults().setDouble(latitude, forKey: "centerCoordinateLatitude")
+        NSUserDefaults.standardUserDefaults().setDouble(longitude, forKey: "centerCoordinateLongitude")
+        NSUserDefaults.standardUserDefaults().setDouble(altitude, forKey: "mapViewAltitude")
+        
+    }
+    
+    func setToLastMapRegion() {
+        if let latitude = NSUserDefaults.standardUserDefaults().valueForKey("centerCoordinateLatitude") as? CLLocationDegrees,
+            longitude = NSUserDefaults.standardUserDefaults().valueForKey("centerCoordinateLongitude") as? CLLocationDegrees,
+            altitude = NSUserDefaults.standardUserDefaults().valueForKey("mapViewAltitude") as? CLLocationDistance {
+            
+            travelMapView.centerCoordinate = CLLocationCoordinate2DMake(latitude, longitude)
+            travelMapView.camera.altitude = altitude
+            
+        } else {
+            return
+        }
+
+    }
+    
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
