@@ -13,17 +13,16 @@ import MapKit
 class TravelMapViewController: UIViewController {
     
     let stack = CoreDataStack.sharedInstance
+    var editMode = false
     
-    
-    
-    @IBOutlet weak var travelMapView: MKMapView!
+    @IBOutlet weak var mapView: MKMapView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        travelMapView.delegate = self
+        mapView.delegate = self
         let gestureRec = UILongPressGestureRecognizer(target: self, action: #selector(addPin))
-        travelMapView.addGestureRecognizer(gestureRec)
+        mapView.addGestureRecognizer(gestureRec)
         
         setMapToLastPosition()
     }
@@ -36,14 +35,25 @@ class TravelMapViewController: UIViewController {
             if let result = result {
                 pins = result
                 print("PINS ARRAY: \(pins)")
-                travelMapView.addAnnotations(pins)
+                mapView.addAnnotations(pins)
                 print("Annotations Added")
             }
         } catch {
             print("Failed to fetch Pin objects")
         }
     }
-
+    
+    @IBAction func editPressed(sender: UIBarButtonItem) {
+        editMode = !editMode
+        if editMode {
+            sender.title = "Done"
+        } else {
+            sender.title = "Edit"
+        }
+        
+    }
+    
+    
 }
 
 
@@ -51,16 +61,16 @@ class TravelMapViewController: UIViewController {
 extension TravelMapViewController: MKMapViewDelegate {
     
     func addPin() {
-        if let gestureRecognizer = travelMapView.gestureRecognizers?[0] {
+        if let gestureRecognizer = mapView.gestureRecognizers?[0] {
             if gestureRecognizer.state == .Began {
-                let longTapPoint = gestureRecognizer.locationInView(travelMapView)
-                let coordinate = travelMapView.convertPoint(longTapPoint, toCoordinateFromView: travelMapView)
+                let longTapPoint = gestureRecognizer.locationInView(mapView)
+                let coordinate = mapView.convertPoint(longTapPoint, toCoordinateFromView: mapView)
                 
                 let annotation = Pin(latitude: coordinate.latitude, longitude: coordinate.longitude, context: stack.context)
                 
-                travelMapView.addAnnotation(annotation)
+                mapView.addAnnotation(annotation)
 //                let region = makeRegionWithAnnotation(annotation)
-//                travelMapView.setRegion(region, animated: true)
+//                mapView.setRegion(region, animated: true)
 
             }
         }
@@ -78,8 +88,8 @@ extension TravelMapViewController: MKMapViewDelegate {
             longitude = NSUserDefaults.standardUserDefaults().valueForKey("centerCoordinateLongitude") as? CLLocationDegrees,
             altitude = NSUserDefaults.standardUserDefaults().valueForKey("mapViewAltitude") as? CLLocationDistance {
             
-            travelMapView.centerCoordinate = CLLocationCoordinate2DMake(latitude, longitude)
-            travelMapView.camera.altitude = altitude
+            mapView.centerCoordinate = CLLocationCoordinate2DMake(latitude, longitude)
+            mapView.camera.altitude = altitude
             
         } else {
             print("Could not set map to last map region")
@@ -89,10 +99,13 @@ extension TravelMapViewController: MKMapViewDelegate {
     
     // MARK: Delegate Methods
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
-        if let annotation = view.annotation {
-            annotation.coordinate
-            
-            print("pass mapView Region")
+        let annotation = view.annotation as! Pin
+        if editMode {
+            mapView.removeAnnotation(annotation)
+            stack.context.deleteObject(annotation)
+            stack.save()
+        } else {
+            // Segue and pass mapView Region
         }
     }
     

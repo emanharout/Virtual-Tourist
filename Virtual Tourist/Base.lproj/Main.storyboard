@@ -30,10 +30,14 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Virtual Tourist" id="IbK-wH-8dk">
-                        <barButtonItem key="rightBarButtonItem" title="Edit" id="y4L-CA-C49"/>
+                        <barButtonItem key="rightBarButtonItem" title="Edit" id="y4L-CA-C49">
+                            <connections>
+                                <action selector="editPressed:" destination="BYZ-38-t0r" id="lp1-ed-zqr"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="travelMapView" destination="odv-Dz-sff" id="xyd-f3-xIe"/>
+                        <outlet property="mapView" destination="odv-Dz-sff" id="Ipy-As-d7y"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
