@@ -15,6 +15,7 @@ class TravelMapViewController: UIViewController {
     let stack = CoreDataStack.sharedInstance
     
     
+    
     @IBOutlet weak var travelMapView: MKMapView!
 
     override func viewDidLoad() {
@@ -25,6 +26,22 @@ class TravelMapViewController: UIViewController {
         travelMapView.addGestureRecognizer(gestureRec)
         
         setMapToLastPosition()
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        let fetchRequest = NSFetchRequest(entityName: "Pin")
+        var pins: [Pin]
+        do {
+            let result = try stack.context.executeFetchRequest(fetchRequest) as? [Pin]
+            if let result = result {
+                pins = result
+                print("PINS ARRAY: \(pins)")
+                travelMapView.addAnnotations(pins)
+                print("Annotations Added")
+            }
+        } catch {
+            print("Failed to fetch Pin objects")
+        }
     }
 
 }
@@ -42,8 +59,9 @@ extension TravelMapViewController: MKMapViewDelegate {
                 let annotation = Pin(latitude: coordinate.latitude, longitude: coordinate.longitude, context: stack.context)
                 
                 travelMapView.addAnnotation(annotation)
-                let region = makeRegionWithAnnotation(annotation)
-                travelMapView.setRegion(region, animated: true)
+//                let region = makeRegionWithAnnotation(annotation)
+//                travelMapView.setRegion(region, animated: true)
+
             }
         }
     }

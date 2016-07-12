@@ -96,10 +96,28 @@ struct CoreDataStack {
 
 extension CoreDataStack {
     
-    func saveContext() throws{
-        if context.hasChanges {
-            try context.save()
+    func save() {
+        context.performBlockAndWait(){
+            
+            if self.context.hasChanges{
+                do{
+                    try self.context.save()
+                }catch{
+                    fatalError("Error while saving main context: \(error)")
+                }
+                
+                self.persistingContext.performBlock(){
+                    do{
+                        try self.persistingContext.save()
+                    }catch{
+                        fatalError("Error while saving persisting context: \(error)")
+                    }
+                }
+            }
         }
+        
+        
+        
     }
 }
 
