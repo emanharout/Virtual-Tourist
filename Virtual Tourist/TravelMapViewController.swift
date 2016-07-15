@@ -34,9 +34,7 @@ class TravelMapViewController: UIViewController {
             let result = try stack.context.executeFetchRequest(fetchRequest) as? [Pin]
             if let result = result {
                 pins = result
-                print("PINS ARRAY: \(pins)")
-                mapView.addAnnotations(pins)
-                print("Annotations Added")
+                refreshPins(pins)
             }
         } catch {
             print("Failed to fetch Pin objects")
@@ -47,13 +45,11 @@ class TravelMapViewController: UIViewController {
         editMode = !editMode
         if editMode {
             sender.title = "Done"
+            // TODO: Move UIView Up
         } else {
             sender.title = "Edit"
         }
-        
     }
-    
-    
 }
 
 
@@ -74,6 +70,12 @@ extension TravelMapViewController: MKMapViewDelegate {
 
             }
         }
+    }
+    
+    func refreshPins(pins: [Pin]) {
+        let allAnnotations = mapView.annotations
+        mapView.removeAnnotations(allAnnotations)
+        mapView.addAnnotations(pins)
     }
     
     func makeRegionWithAnnotation(annotation: MKAnnotation) -> MKCoordinateRegion {
@@ -130,7 +132,6 @@ extension TravelMapViewController: MKMapViewDelegate {
         NSUserDefaults.standardUserDefaults().setDouble(latitude, forKey: "centerCoordinateLatitude")
         NSUserDefaults.standardUserDefaults().setDouble(longitude, forKey: "centerCoordinateLongitude")
         NSUserDefaults.standardUserDefaults().setDouble(altitude, forKey: "mapViewAltitude")
-        
     }
 }
 
