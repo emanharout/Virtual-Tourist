@@ -12,6 +12,15 @@ import CoreData
 
 class Photo: NSManagedObject {
 
-// Insert code here to add functionality to your managed object subclass
+    convenience init(data: NSData, pin: Pin) {
+        if let entity = NSEntityDescription.entityForName("Photo", inManagedObjectContext: CoreDataStack.sharedInstance.context) {
+            self.init(entity: entity, insertIntoManagedObjectContext: CoreDataStack.sharedInstance.context)
+            self.pin = pin
+            self.imageData = data
+        } else {
+            fatalError("Failed to initialize Photo")
+        }
+        
+    }
 
 }

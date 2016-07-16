@@ -46,10 +46,10 @@
             </objects>
             <point key="canvasLocation" x="1009" y="-376"/>
         </scene>
-        <!--View Controller-->
+        <!--Photo Album View Controller-->
         <scene sceneID="M1a-xE-PZ0">
             <objects>
-                <viewController id="tDp-oZ-Tjt" sceneMemberID="viewController">
+                <viewController id="tDp-oZ-Tjt" customClass="PhotoAlbumViewController" customModule="Virtual_Tourist" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="zCP-B5-KCW"/>
                         <viewControllerLayoutGuide type="bottom" id="zfT-uK-AeN"/>
@@ -113,6 +113,10 @@
                             <constraint firstItem="Z53-dI-lr7" firstAttribute="top" secondItem="zCP-B5-KCW" secondAttribute="bottom" id="pOR-MN-Dkn"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="collectionView" destination="frk-Kw-e6c" id="aLJ-ur-Qtp"/>
+                        <outlet property="mapView" destination="Z53-dI-lr7" id="uUl-LF-1qw"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oRh-7b-iyb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

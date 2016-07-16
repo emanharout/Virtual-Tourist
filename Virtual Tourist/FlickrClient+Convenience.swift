@@ -10,7 +10,7 @@ import Foundation
 
 extension FlickrClient {
     
-    func searchPhotosWithLocation(latitude: Double, longitude: Double, completionHandlerForSearchPhotos: (result: AnyObject?, error: NSError?)->Void) {
+    func searchPhotoURLsWithLocation(latitude: Double, longitude: Double, completionHandlerForSearchPhotos: (result: AnyObject?, error: NSError?)->Void) {
         let bbox = bboxCoordinate.sharedInstance.makeBbox(latitude, longitude: longitude)
         let scheme = FlickrClient.Constants.Scheme
         let host = FlickrClient.Constants.Host
@@ -52,7 +52,39 @@ extension FlickrClient {
         }
     }
     
-    func downloadImages(photoURLs: [NSURL]) {
-        
+    func downloadDataFromURL(photoURLs: [NSURL], pin: Pin, completionHandler: (result: [NSData]?, error: NSError?)->Void) {
+        let queue = dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)
+        dispatch_async(queue) {
+            var dataForImages = [NSData]()
+            for url in photoURLs {
+                if let data = NSData(contentsOfURL: url) {
+                    dataForImages.append(data)
+                } else {
+                    let userInfo = ["NSUnderlyingErrorKey": "Failed to access image data from url: \(url)"]
+                    let error = NSError(domain: "downloadImages", code: 10, userInfo: userInfo)
+                    completionHandler(result: nil, error: error)
+                }
+            }
+            completionHandler(result: dataForImages, error: nil)
+        }
     }
+    
+    func retrieveImageData(pin: Pin, completionHandler: (result: [NSData]?, error: NSError?)->Void) {
+        searchPhotoURLsWithLocation(pin.latitude, longitude: pin.longitude) { (result, error) in
+            if let error = error {
+                print(error.userInfo["NSUnderlyingErrorKey"])
+            } else if let result = result as? [NSURL] {
+                self.downloadDataFromURL(result, pin: pin){ (result, error) in
+                    if let error = error {
+                        completionHandler(result: nil, error: error)
+                    } else {
+                        completionHandler(result: result, error: nil)
+                    }
+                    
+                }
+            }
+            
+        }
+    }
+    
 }
