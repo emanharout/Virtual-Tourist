@@ -18,16 +18,38 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="odv-Dz-sff">
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="aox-my-aGv">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                            </mapView>
+                                <subviews>
+                                    <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="odv-Dz-sff">
+                                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                    </mapView>
+                                    <view hidden="YES" contentMode="scaleToFill" placeholderIntrinsicWidth="600" placeholderIntrinsicHeight="44" translatesAutoresizingMaskIntoConstraints="NO" id="TfS-Ze-pYw">
+                                        <rect key="frame" x="0.0" y="600" width="600" height="0.0"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap Pin to Delete" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="brf-6h-MFO">
+                                                <rect key="frame" x="235" y="-10" width="130" height="21"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstItem="brf-6h-MFO" firstAttribute="centerY" secondItem="TfS-Ze-pYw" secondAttribute="centerY" id="9Ir-1L-aeg"/>
+                                            <constraint firstAttribute="height" priority="999" constant="44" id="md0-eP-bmZ"/>
+                                            <constraint firstItem="brf-6h-MFO" firstAttribute="centerX" secondItem="TfS-Ze-pYw" secondAttribute="centerX" id="zpH-5g-vOz"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="odv-Dz-sff" secondAttribute="bottom" id="ECO-up-cKL"/>
-                            <constraint firstItem="odv-Dz-sff" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="Gk4-sT-Xse"/>
-                            <constraint firstItem="odv-Dz-sff" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="fp9-2z-NBq"/>
-                            <constraint firstAttribute="trailing" secondItem="odv-Dz-sff" secondAttribute="trailing" id="hK9-vp-2QF"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="aox-my-aGv" secondAttribute="bottom" id="87N-Im-fCf"/>
+                            <constraint firstAttribute="trailing" secondItem="aox-my-aGv" secondAttribute="trailing" id="HNp-Yf-fDO"/>
+                            <constraint firstItem="aox-my-aGv" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Hoi-fv-yGF"/>
+                            <constraint firstItem="aox-my-aGv" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="Xtx-XY-obj"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Virtual Tourist" id="IbK-wH-8dk">
@@ -38,8 +60,10 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="editLabel" destination="brf-6h-MFO" id="0sV-58-Ygy"/>
+                        <outlet property="editView" destination="TfS-Ze-pYw" id="MiF-qv-3ke"/>
                         <outlet property="mapView" destination="odv-Dz-sff" id="Ipy-As-d7y"/>
-                        <segue destination="tDp-oZ-Tjt" kind="show" identifier="showPhotoVC" id="cr9-1M-aqo"/>
+                        <segue destination="tDp-oZ-Tjt" kind="show" identifier="showPinPhotos" id="cr9-1M-aqo"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -58,7 +82,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Z53-dI-lr7">
+                            <mapView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" mapType="standard" zoomEnabled="NO" scrollEnabled="NO" rotateEnabled="NO" pitchEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z53-dI-lr7">
                                 <rect key="frame" x="0.0" y="64" width="600" height="148"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="148" id="Urh-Sy-4ic"/>

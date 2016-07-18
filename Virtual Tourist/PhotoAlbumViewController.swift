@@ -24,6 +24,9 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        mapView.addAnnotation(pin)
+        mapView.region = makeRegionWithAnnotation(pin)
+        
         if fetchPhotos().isEmpty {
             FlickrClient.sharedInstance.retrieveImageData(pin) { (result, error) in
                 if let error = error {
@@ -47,7 +50,8 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
     // TODO: Check if lack of sort desc causes issue w/ results
     func fetchPhotos() -> [Photo] {
         let fetchRequest = NSFetchRequest(entityName: "Photo")
-        let predicate = NSPredicate(format: "Pin = %@", argumentArray: [pin])
+        fetchRequest.sortDescriptors = [NSSortDescriptor]()
+        let predicate = NSPredicate(format: "pin = %@", argumentArray: [pin])
         fetchRequest.predicate = predicate
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: stack.context, sectionNameKeyPath: nil, cacheName: nil)
         fetchedResultsController.delegate = self
@@ -65,6 +69,13 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
     func performOnMainThread(block: ()->Void) {
         let mainQueue = dispatch_get_main_queue()
         dispatch_async(mainQueue, block)
+    }
+    
+    func makeRegionWithAnnotation(annotation: MKAnnotation) -> MKCoordinateRegion {
+        let center = annotation.coordinate
+        let span = MKCoordinateSpanMake(0.002, 0.002)
+        let region = MKCoordinateRegion(center: center, span: span)
+        return region
     }
     
 }
