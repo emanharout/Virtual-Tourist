@@ -14,8 +14,7 @@ class TravelMapViewController: UIViewController {
     
     let stack = CoreDataStack.sharedInstance
     var editMode = false
-    var storedMapRegion: MKCoordinateRegion?
-    var mapPositionWasSet = false
+    var mapPosition: MapPosition!
     
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var editView: UIView!
@@ -24,14 +23,15 @@ class TravelMapViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        mapPosition = MapPosition(mapView: mapView, storedMapRegion: nil)
         mapView.delegate = self
         setupMapviewGestureRecognizer()
         fetchPins()
-        retrieveMapRegion()
+        mapPosition.retrieveMapRegion()
         
         //Set center before view appears since its value is not modified automatically by system
-        if storedMapRegion != nil && !mapPositionWasSet {
-            mapView.centerCoordinate = storedMapRegion!.center
+        if mapPosition.storedMapRegion != nil && !mapPosition.mapPositionWasSet {
+            mapView.centerCoordinate = mapPosition.storedMapRegion!.center
         }
     }
     
@@ -39,8 +39,8 @@ class TravelMapViewController: UIViewController {
         super.viewDidAppear(animated)
         
         // Mapview span/altitude is automatically modified and snaps to other levels until view appears, must set region here
-        if !mapPositionWasSet {
-            setMapToLastPosition()
+        if !mapPosition.mapPositionWasSet {
+            mapPosition.setMapToLastPosition()
         }
     }
     
@@ -116,41 +116,10 @@ extension TravelMapViewController: MKMapViewDelegate {
         mapView.addAnnotations(pins)
     }
     
-    func retrieveMapRegion() {
-        if let latitude = NSUserDefaults.standardUserDefaults().valueForKey("centerCoordinateLatitude") as? CLLocationDegrees,
-            longitude = NSUserDefaults.standardUserDefaults().valueForKey("centerCoordinateLongitude") as? CLLocationDegrees,
-            spanLat = NSUserDefaults.standardUserDefaults().valueForKey("spanLat") as? CLLocationDegrees,
-            spanLong = NSUserDefaults.standardUserDefaults().valueForKey("spanLong") as? CLLocationDegrees {
-            
-            let center = CLLocationCoordinate2DMake(latitude, longitude)
-            let span = MKCoordinateSpan(latitudeDelta: spanLat, longitudeDelta: spanLong)
-            storedMapRegion = MKCoordinateRegion(center: center, span: span)
-        } else {
-            print("Could not set map to last map region")
-        }
-        
-    }
-    
-    func setMapToLastPosition() {
-        if let storedMapRegion = storedMapRegion {
-            mapView.region = storedMapRegion
-            mapPositionWasSet = true
-        }
-    }
     
     // MARK: Delegate Methods
     func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        let region = mapView.region
-        let latitude = region.center.latitude
-        let longitude = region.center.longitude
-        let spanLat = region.span.latitudeDelta
-        let spanLong = region.span.longitudeDelta
-        
-        NSUserDefaults.standardUserDefaults().setDouble(latitude, forKey: "centerCoordinateLatitude")
-        NSUserDefaults.standardUserDefaults().setDouble(longitude, forKey: "centerCoordinateLongitude")
-        NSUserDefaults.standardUserDefaults().setDouble(spanLat, forKey: "spanLat")
-        NSUserDefaults.standardUserDefaults().setDouble(spanLong, forKey: "spanLong")
-        NSUserDefaults.standardUserDefaults().synchronize()
+        mapPosition.storeRegionValues()
     }
     
     func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
