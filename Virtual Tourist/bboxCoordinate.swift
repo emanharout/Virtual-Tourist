@@ -10,7 +10,7 @@ struct bboxCoordinate {
     
     static let searchLongRange = (min: -180.0, max: 180.0)
     static let searchLatRange = (min: -90.0, max: 90.0)
-    let halfDiameter = 1.0
+    let halfDiameter = 0.5
     
     func makeBbox(latitude: Double, longitude: Double)-> String {
         

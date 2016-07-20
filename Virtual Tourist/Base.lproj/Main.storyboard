@@ -92,7 +92,7 @@
                                 <state key="normal" title="New Collection"/>
                             </button>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="frk-Kw-e6c">
-                                <rect key="frame" x="0.0" y="220" width="600" height="342"/>
+                                <rect key="frame" x="0.0" y="212" width="600" height="350"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="eMZ-ty-ak6">
                                     <size key="itemSize" width="50" height="50"/>
@@ -134,7 +134,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="Z53-dI-lr7" firstAttribute="leading" secondItem="3ix-bn-imp" secondAttribute="leading" id="0Vh-uC-fVV"/>
-                            <constraint firstItem="frk-Kw-e6c" firstAttribute="top" secondItem="Z53-dI-lr7" secondAttribute="bottom" constant="8" id="7i1-sf-JZM"/>
+                            <constraint firstItem="frk-Kw-e6c" firstAttribute="top" secondItem="Z53-dI-lr7" secondAttribute="bottom" id="7i1-sf-JZM"/>
                             <constraint firstAttribute="trailing" secondItem="frk-Kw-e6c" secondAttribute="trailing" id="BzI-Zr-MGV"/>
                             <constraint firstItem="frk-Kw-e6c" firstAttribute="leading" secondItem="3ix-bn-imp" secondAttribute="leading" id="KUH-QS-Zsp"/>
                             <constraint firstItem="Py1-sH-3CO" firstAttribute="centerX" secondItem="3ix-bn-imp" secondAttribute="centerX" id="PYC-ef-54G"/>

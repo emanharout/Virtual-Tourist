@@ -7,11 +7,12 @@ import CoreData
 class PhotoAlbumViewController: UIViewController {
     
     var pin: Pin!
+	var photoURLs: [NSURL]?
     var fetchedResultsController: NSFetchedResultsController!
     let stack = CoreDataStack.sharedInstance
     var insertedItemsIndex: [NSIndexPath]!
     var deletedItemsIndex: [NSIndexPath]!
-    
+	
 
     
     @IBOutlet weak var mapView: MKMapView!
@@ -25,19 +26,13 @@ class PhotoAlbumViewController: UIViewController {
         mapView.addAnnotation(pin)
         mapView.region = makeRegionWithAnnotation(pin)
         
-        let itemWidth = ((view.frame.size.width - 15.0)/3)
+        let itemDimension = ((view.frame.size.width - 10.0)/3)
         flowLayout.minimumLineSpacing = CGFloat(5.0)
         flowLayout.minimumInteritemSpacing = CGFloat(5.0)
-        flowLayout.itemSize = CGSize(width: itemWidth, height: itemWidth)
+        flowLayout.itemSize = CGSize(width: itemDimension, height: itemDimension)
         
         if fetchPhotos().isEmpty {
-            FlickrClient.sharedInstance.getPhotoURLsWithLocation(pin.latitude, longitude: pin.longitude) { (result, error) in
-               if let error = error {
-                    print(error.userInfo["NSUnderlyingErrorKey"])
-                } else if let result = result {
-                    //TODO: Additional Setup
-                }
-            }
+            getPhotoURLs()
         } else {
             // Setup UI
             print("fetch was not empty")
@@ -65,7 +60,19 @@ class PhotoAlbumViewController: UIViewController {
         }
         return results
     }
-    
+	
+	func getPhotoURLs() {
+		FlickrClient.sharedInstance.getPhotoURLsWithLocation(pin.latitude, longitude: pin.longitude) { (result, error) in
+			if let error = error {
+				print(error.userInfo["NSUnderlyingErrorKey"])
+			} else if let result = result {
+				self.photoURLs = result
+				//TODO: Additional Setup
+				
+			}
+		}
+	}
+	
     func performOnMainThread(block: ()->Void) {
         let mainQueue = dispatch_get_main_queue()
         dispatch_async(mainQueue, block)
@@ -91,6 +98,17 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 //        let image = UIImage(data: photoData!)
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("PhotoCell", forIndexPath: indexPath) as! PhotoCell
         cell.imageView.image = UIImage(named: "placeholder")
+		if let url = photoURLs?[indexPath.row] {
+			FlickrClient.sharedInstance.downloadDataFromURL(url) { (result, error) in
+				guard let data = result else {
+					return
+				}
+				let downloadedImage = UIImage(data: data)
+				self.performOnMainThread{
+					cell.imageView.image = downloadedImage
+				}
+			}
+		}
 //
 //        cell.imageView.image = image
 //        collectionView.reloadData()

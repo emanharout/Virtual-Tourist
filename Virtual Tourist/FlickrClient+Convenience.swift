@@ -6,7 +6,7 @@ import Foundation
 
 extension FlickrClient {
     
-    func getPhotoURLsWithLocation(latitude: Double, longitude: Double, completionHandlerForSearchPhotos: (result: AnyObject?, error: NSError?)->Void) {
+    func getPhotoURLsWithLocation(latitude: Double, longitude: Double, completionHandlerForSearchPhotos: (result: [NSURL]?, error: NSError?)->Void) {
         let bbox = bboxCoordinate.sharedInstance.makeBbox(latitude, longitude: longitude)
         let scheme = FlickrClient.Constants.Scheme
         let host = FlickrClient.Constants.Host
@@ -42,7 +42,6 @@ extension FlickrClient {
                             print("No url found for photo")
                         }
                     }
-                    self.imageURLs += photoURLs
                     completionHandlerForSearchPhotos(result: photoURLs, error: nil)
                 }
             }

@@ -8,8 +8,6 @@ class FlickrClient: Client {
     
     static let sharedInstance = FlickrClient()
     
-    var imageURLs = [NSURL]()
-    
     func taskForGETMethod(url: NSURL, completionHandlerForTask: (result: AnyObject?, error: NSError?)->Void) -> NSURLSessionDataTask {
         let request = NSURLRequest(URL: url)
         let session = NSURLSession.sharedSession()
