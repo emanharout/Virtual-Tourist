@@ -1,8 +1,4 @@
-//
-//  FlickrClient+Convenience.swift
-//  Virtual Tourist
-//
-//  Created by Emmanuoel Eldridge on 7/14/16.
+
 //  Copyright © 2016 Emmanuoel Haroutunian. All rights reserved.
 //
 
@@ -10,7 +6,7 @@ import Foundation
 
 extension FlickrClient {
     
-    func searchPhotoURLsWithLocation(latitude: Double, longitude: Double, completionHandlerForSearchPhotos: (result: AnyObject?, error: NSError?)->Void) {
+    func getPhotoURLsWithLocation(latitude: Double, longitude: Double, completionHandlerForSearchPhotos: (result: AnyObject?, error: NSError?)->Void) {
         let bbox = bboxCoordinate.sharedInstance.makeBbox(latitude, longitude: longitude)
         let scheme = FlickrClient.Constants.Scheme
         let host = FlickrClient.Constants.Host
@@ -46,13 +42,27 @@ extension FlickrClient {
                             print("No url found for photo")
                         }
                     }
+                    self.imageURLs += photoURLs
                     completionHandlerForSearchPhotos(result: photoURLs, error: nil)
                 }
             }
         }
     }
     
-    func downloadDataFromURL(photoURLs: [NSURL], pin: Pin, completionHandler: (result: [NSData]?, error: NSError?)->Void) {
+    func downloadDataFromURL(photoURL: NSURL, completionHandler: (result: NSData?, error: NSError?)->Void) {
+        let queue = dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)
+        dispatch_async(queue) {
+            if let imageData = NSData(contentsOfURL: photoURL) {
+                completionHandler(result: imageData, error: nil)
+            } else {
+                let userInfo = ["NSUnderlyingErrorKey": "Failed to access image data from url: \(photoURL)"]
+                let error = NSError(domain: "downloadImages", code: 10, userInfo: userInfo)
+                completionHandler(result: nil, error: error)
+            }
+        }
+    }
+    
+    func downloadDataFromURLs(photoURLs: [NSURL], pin: Pin, completionHandler: (result: [NSData]?, error: NSError?)->Void) {
         let queue = dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)
         dispatch_async(queue) {
             var dataForImages = [NSData]()
@@ -69,22 +79,24 @@ extension FlickrClient {
         }
     }
     
-    func retrieveImageData(pin: Pin, completionHandler: (result: [NSData]?, error: NSError?)->Void) {
-        searchPhotoURLsWithLocation(pin.latitude, longitude: pin.longitude) { (result, error) in
-            if let error = error {
-                print(error.userInfo["NSUnderlyingErrorKey"])
-            } else if let result = result as? [NSURL] {
-                self.downloadDataFromURL(result, pin: pin){ (result, error) in
-                    if let error = error {
-                        completionHandler(result: nil, error: error)
-                    } else {
-                        completionHandler(result: result, error: nil)
-                    }
-                    
-                }
-            }
-            
-        }
-    }
+//    // Get URLs for a pin location, then download Data from urls.
+//    func retrieveImageData(pin: Pin, completionHandler: (result: [NSData]?, error: NSError?)->Void) {
+//        getPhotoURLsWithLocation(pin.latitude, longitude: pin.longitude) { (result, error) in
+//            if let error = error {
+//                print(error.userInfo["NSUnderlyingErrorKey"])
+//                print("ERROR HERE")
+//            } else if let result = result as? [NSURL] {
+//                self.downloadDataFromURLs(result, pin: pin){ (result, error) in
+//                    if let error = error {
+//                        completionHandler(result: nil, error: error)
+//                    } else {
+//                        completionHandler(result: result, error: nil)
+//                    }
+//                    
+//                }
+//            }
+//            
+//        }
+//    }
     
 }

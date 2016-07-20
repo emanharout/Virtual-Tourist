@@ -1,8 +1,4 @@
-//
-//  FlickrClient.swift
-//  Virtual Tourist
-//
-//  Created by Emmanuoel Eldridge on 7/12/16.
+
 //  Copyright © 2016 Emmanuoel Haroutunian. All rights reserved.
 //
 
@@ -11,6 +7,8 @@ import Foundation
 class FlickrClient: Client {
     
     static let sharedInstance = FlickrClient()
+    
+    var imageURLs = [NSURL]()
     
     func taskForGETMethod(url: NSURL, completionHandlerForTask: (result: AnyObject?, error: NSError?)->Void) -> NSURLSessionDataTask {
         let request = NSURLRequest(URL: url)

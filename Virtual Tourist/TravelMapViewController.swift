@@ -1,10 +1,4 @@
-//
-//  ViewController.swift
-//  Virtual Tourist
-//
-//  Created by Emmanuoel Eldridge on 7/6/16.
-//  Copyright © 2016 Emmanuoel Haroutunian. All rights reserved.
-//
+
 
 import UIKit
 import CoreData
@@ -23,13 +17,12 @@ class TravelMapViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        mapPosition = MapPosition(mapView: mapView, storedMapRegion: nil)
         mapView.delegate = self
         setupMapviewGestureRecognizer()
         fetchPins()
+        mapPosition = MapPosition(mapView: mapView, storedMapRegion: nil)
         mapPosition.retrieveMapRegion()
         
-        //Set center before view appears since its value is not modified automatically by system
         if mapPosition.storedMapRegion != nil && !mapPosition.mapPositionWasSet {
             mapView.centerCoordinate = mapPosition.storedMapRegion!.center
         }
@@ -38,7 +31,7 @@ class TravelMapViewController: UIViewController {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        // Mapview span/altitude is automatically modified and snaps to other levels until view appears, must set region here
+        // Mapview span/altitude values are automatically modified and snaps to other levels until view appears, must set region here
         if !mapPosition.mapPositionWasSet {
             mapPosition.setMapToLastPosition()
         }
@@ -63,11 +56,6 @@ class TravelMapViewController: UIViewController {
             }
             button.title = "Edit"
         }
-    }
-    
-    func setupMapviewGestureRecognizer() {
-        let gestureRec = UILongPressGestureRecognizer(target: self, action: #selector(addPin))
-        mapView.addGestureRecognizer(gestureRec)
     }
     
     func fetchPins() {
@@ -114,6 +102,11 @@ extension TravelMapViewController: MKMapViewDelegate {
         let allAnnotations = mapView.annotations
         mapView.removeAnnotations(allAnnotations)
         mapView.addAnnotations(pins)
+    }
+    
+    func setupMapviewGestureRecognizer() {
+        let gestureRec = UILongPressGestureRecognizer(target: self, action: #selector(addPin))
+        mapView.addGestureRecognizer(gestureRec)
     }
     
     

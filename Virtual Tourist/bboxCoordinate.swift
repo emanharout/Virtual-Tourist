@@ -1,8 +1,4 @@
-//
-//  bboxCoordinate.swift
-//  Virtual Tourist
-//
-//  Created by Emmanuoel Eldridge on 7/13/16.
+
 //  Copyright © 2016 Emmanuoel Haroutunian. All rights reserved.
 //
 

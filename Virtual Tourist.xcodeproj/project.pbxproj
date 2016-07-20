@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0339AD881D3C70DB00D00F8C /* MapPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0339AD871D3C70DB00D00F8C /* MapPosition.swift */; };
+		0339AD8A1D3CC65A00D00F8C /* PhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0339AD891D3CC65A00D00F8C /* PhotoCell.swift */; };
 		03D8BDE81D305F2A007A95F8 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 03D8BDE61D305F2A007A95F8 /* Model.xcdatamodeld */; };
 		03D8BDFD1D30A56B007A95F8 /* Photo+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D8BDF91D30A56B007A95F8 /* Photo+CoreDataProperties.swift */; };
 		03D8BDFE1D30A56B007A95F8 /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D8BDFA1D30A56B007A95F8 /* Photo.swift */; };
@@ -47,6 +48,7 @@
 
 /* Begin PBXFileReference section */
 		0339AD871D3C70DB00D00F8C /* MapPosition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapPosition.swift; sourceTree = "<group>"; };
+		0339AD891D3CC65A00D00F8C /* PhotoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoCell.swift; sourceTree = "<group>"; };
 		03D8BDE71D305F2A007A95F8 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		03D8BDF91D30A56B007A95F8 /* Photo+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Photo+CoreDataProperties.swift"; path = "../Photo+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		03D8BDFA1D30A56B007A95F8 /* Photo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Photo.swift; path = ../Photo.swift; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 		03D8BE101D3ACF11007A95F8 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				0339AD891D3CC65A00D00F8C /* PhotoCell.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -336,6 +339,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				03D8BDFE1D30A56B007A95F8 /* Photo.swift in Sources */,
+				0339AD8A1D3CC65A00D00F8C /* PhotoCell.swift in Sources */,
 				03D8BE081D368A2E007A95F8 /* bboxCoordinate.swift in Sources */,
 				03D8BE121D3AF2F6007A95F8 /* PhotoAlbumViewController.swift in Sources */,
 				03F602EC1D2D8481006E2679 /* TravelMapViewController.swift in Sources */,

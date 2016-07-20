@@ -3,7 +3,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Virtual Tourist-->
@@ -18,7 +17,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="aox-my-aGv">
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="aox-my-aGv">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <subviews>
                                     <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="odv-Dz-sff">
@@ -93,7 +92,8 @@
                                 <state key="normal" title="New Collection"/>
                             </button>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="frk-Kw-e6c">
-                                <rect key="frame" x="9" y="220" width="582" height="342"/>
+                                <rect key="frame" x="0.0" y="220" width="600" height="342"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="eMZ-ty-ak6">
                                     <size key="itemSize" width="50" height="50"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -101,7 +101,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="pinImage" id="KH8-Tk-LU2">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoCell" id="KH8-Tk-LU2" customClass="PhotoCell" customModule="Virtual_Tourist" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -120,16 +120,23 @@
                                             <constraint firstItem="Wlj-ys-92y" firstAttribute="leading" secondItem="KH8-Tk-LU2" secondAttribute="leading" id="M7O-Y9-is0"/>
                                             <constraint firstItem="Wlj-ys-92y" firstAttribute="top" secondItem="KH8-Tk-LU2" secondAttribute="top" id="Rdj-7q-8mG"/>
                                         </constraints>
+                                        <connections>
+                                            <outlet property="imageView" destination="Wlj-ys-92y" id="JAF-fi-4vK"/>
+                                        </connections>
                                     </collectionViewCell>
                                 </cells>
+                                <connections>
+                                    <outlet property="dataSource" destination="tDp-oZ-Tjt" id="ruz-Uo-eLQ"/>
+                                    <outlet property="delegate" destination="tDp-oZ-Tjt" id="Q4c-DR-Px0"/>
+                                </connections>
                             </collectionView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="Z53-dI-lr7" firstAttribute="leading" secondItem="3ix-bn-imp" secondAttribute="leading" id="0Vh-uC-fVV"/>
                             <constraint firstItem="frk-Kw-e6c" firstAttribute="top" secondItem="Z53-dI-lr7" secondAttribute="bottom" constant="8" id="7i1-sf-JZM"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="frk-Kw-e6c" secondAttribute="trailing" constant="-11" id="BzI-Zr-MGV"/>
-                            <constraint firstItem="frk-Kw-e6c" firstAttribute="leading" secondItem="3ix-bn-imp" secondAttribute="leadingMargin" constant="-11" id="KUH-QS-Zsp"/>
+                            <constraint firstAttribute="trailing" secondItem="frk-Kw-e6c" secondAttribute="trailing" id="BzI-Zr-MGV"/>
+                            <constraint firstItem="frk-Kw-e6c" firstAttribute="leading" secondItem="3ix-bn-imp" secondAttribute="leading" id="KUH-QS-Zsp"/>
                             <constraint firstItem="Py1-sH-3CO" firstAttribute="centerX" secondItem="3ix-bn-imp" secondAttribute="centerX" id="PYC-ef-54G"/>
                             <constraint firstItem="zfT-uK-AeN" firstAttribute="top" secondItem="Py1-sH-3CO" secondAttribute="bottom" id="R2D-Kg-tFq"/>
                             <constraint firstItem="Py1-sH-3CO" firstAttribute="top" secondItem="frk-Kw-e6c" secondAttribute="bottom" constant="8" id="cAb-wk-KeV"/>
@@ -139,6 +146,7 @@
                     </view>
                     <connections>
                         <outlet property="collectionView" destination="frk-Kw-e6c" id="aLJ-ur-Qtp"/>
+                        <outlet property="flowLayout" destination="eMZ-ty-ak6" id="4Sb-Ld-7Bt"/>
                         <outlet property="mapView" destination="Z53-dI-lr7" id="uUl-LF-1qw"/>
                     </connections>
                 </viewController>
