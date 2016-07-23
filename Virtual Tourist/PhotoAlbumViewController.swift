@@ -19,6 +19,7 @@ class PhotoAlbumViewController: UIViewController {
 	@IBOutlet weak var collectionView: UICollectionView!
 	@IBOutlet weak var imageView: UIImageView!
 	@IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
+	@IBOutlet weak var bottomBarButton: UIBarButtonItem!
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -27,6 +28,7 @@ class PhotoAlbumViewController: UIViewController {
 		mapView.region = makeRegionWithAnnotation(pin)
 		
 		setupFlowLayout()
+		navigationController?.setToolbarHidden(false, animated: true)
 		
 		if fetchPhotos().isEmpty {
 			getPhotoURLs()
@@ -72,6 +74,10 @@ class PhotoAlbumViewController: UIViewController {
 		dispatch_async(mainQueue, block)
 	}
 	
+	@IBAction func bottomBarButtonPressed(sender: UIBarButtonItem) {
+		
+	}
+	
 	func makeRegionWithAnnotation(annotation: MKAnnotation) -> MKCoordinateRegion {
 		let center = annotation.coordinate
 		let span = MKCoordinateSpanMake(0.002, 0.002)
@@ -92,24 +98,28 @@ class PhotoAlbumViewController: UIViewController {
 extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDataSource {
 	
 	func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-		
-		
-//		        let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
-//		        let photoData = photo.imageData
-//		        let image = UIImage(data: photoData!)
 		let cell = collectionView.dequeueReusableCellWithReuseIdentifier("PhotoCell", forIndexPath: indexPath) as! PhotoCell
-		cell.imageView.image = UIImage(named: "placeholder")
-		if let url = photoURLs?[indexPath.row] {
-			FlickrClient.sharedInstance.downloadDataFromURL(url) { (result, error) in
-				guard let data = result else {
-					return
-				}
-				let downloadedImage = UIImage(data: data)
-				self.performOnMainThread{
-					cell.imageView.image = downloadedImage
-				}
-			}
+		
+		if let photo = fetchedResultsController.objectAtIndexPath(indexPath) as? Photo {
+			let photoData = photo.imageData
+			let image = UIImage(data: photoData!)
+			cell.imageView.image = image
+		} else {
+			cell.imageView.image = UIImage(named: "placeholder")
+			
 		}
+		
+//				if let url = photoURLs?[indexPath.row] {
+//			FlickrClient.sharedInstance.downloadDataFromURL(url) { (result, error) in
+//				guard let data = result else {
+//					return
+//				}
+//				let downloadedImage = UIImage(data: data)
+//				self.performOnMainThread{
+//					cell.imageView.image = downloadedImage
+//				}
+//			}
+//		}
 		
 		return cell
 	}

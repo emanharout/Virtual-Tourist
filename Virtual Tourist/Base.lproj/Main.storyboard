@@ -87,12 +87,8 @@
                                     <constraint firstAttribute="height" constant="148" id="Urh-Sy-4ic"/>
                                 </constraints>
                             </mapView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Py1-sH-3CO">
-                                <rect key="frame" x="248" y="570" width="104" height="30"/>
-                                <state key="normal" title="New Collection"/>
-                            </button>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="frk-Kw-e6c">
-                                <rect key="frame" x="0.0" y="212" width="600" height="350"/>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="frk-Kw-e6c">
+                                <rect key="frame" x="0.0" y="212" width="600" height="388"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="eMZ-ty-ak6">
                                     <size key="itemSize" width="50" height="50"/>
@@ -137,14 +133,23 @@
                             <constraint firstItem="frk-Kw-e6c" firstAttribute="top" secondItem="Z53-dI-lr7" secondAttribute="bottom" id="7i1-sf-JZM"/>
                             <constraint firstAttribute="trailing" secondItem="frk-Kw-e6c" secondAttribute="trailing" id="BzI-Zr-MGV"/>
                             <constraint firstItem="frk-Kw-e6c" firstAttribute="leading" secondItem="3ix-bn-imp" secondAttribute="leading" id="KUH-QS-Zsp"/>
-                            <constraint firstItem="Py1-sH-3CO" firstAttribute="centerX" secondItem="3ix-bn-imp" secondAttribute="centerX" id="PYC-ef-54G"/>
-                            <constraint firstItem="zfT-uK-AeN" firstAttribute="top" secondItem="Py1-sH-3CO" secondAttribute="bottom" id="R2D-Kg-tFq"/>
-                            <constraint firstItem="Py1-sH-3CO" firstAttribute="top" secondItem="frk-Kw-e6c" secondAttribute="bottom" constant="8" id="cAb-wk-KeV"/>
+                            <constraint firstItem="zfT-uK-AeN" firstAttribute="top" secondItem="frk-Kw-e6c" secondAttribute="bottom" id="X8T-LL-quh"/>
                             <constraint firstAttribute="trailing" secondItem="Z53-dI-lr7" secondAttribute="trailing" id="lUz-Ir-dcU"/>
                             <constraint firstItem="Z53-dI-lr7" firstAttribute="top" secondItem="zCP-B5-KCW" secondAttribute="bottom" id="pOR-MN-Dkn"/>
                         </constraints>
                     </view>
+                    <toolbarItems>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="Cn5-3A-Kew"/>
+                        <barButtonItem title="New Collection" id="oCw-dg-LtD">
+                            <connections>
+                                <action selector="bottomBarButtonPressed:" destination="tDp-oZ-Tjt" id="tcn-u1-Kdh"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="bJ8-jh-13o"/>
+                    </toolbarItems>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="bottomBarButton" destination="oCw-dg-LtD" id="N66-kZ-fMs"/>
                         <outlet property="collectionView" destination="frk-Kw-e6c" id="aLJ-ur-Qtp"/>
                         <outlet property="flowLayout" destination="eMZ-ty-ak6" id="4Sb-Ld-7Bt"/>
                         <outlet property="mapView" destination="Z53-dI-lr7" id="uUl-LF-1qw"/>
@@ -164,6 +169,10 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="9ie-ST-Vxn">
+                        <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="wb0-OS-KcA"/>
                     </connections>
