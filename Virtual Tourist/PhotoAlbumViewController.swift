@@ -94,9 +94,9 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 	func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
 		
 		
-		//        let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
-		//        let photoData = photo.imageData
-		//        let image = UIImage(data: photoData!)
+//		        let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
+//		        let photoData = photo.imageData
+//		        let image = UIImage(data: photoData!)
 		let cell = collectionView.dequeueReusableCellWithReuseIdentifier("PhotoCell", forIndexPath: indexPath) as! PhotoCell
 		cell.imageView.image = UIImage(named: "placeholder")
 		if let url = photoURLs?[indexPath.row] {
@@ -115,8 +115,13 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 	}
 	
 	func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-		print("collect view number items")
-		return 21
+		let numberOfItems: Int
+		guard let fetchedItems = fetchedResultsController.fetchedObjects?.count else {
+			numberOfItems = 0
+			return numberOfItems
+		}
+		numberOfItems = min(fetchedItems, 21)
+		return numberOfItems
 	}
 	
 	func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
