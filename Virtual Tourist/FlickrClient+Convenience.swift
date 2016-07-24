@@ -16,6 +16,7 @@ extension FlickrClient {
                           FlickrClient.ParameterKeys.Method: FlickrClient.ParameterValues.PhotoSearchMethod,
                           FlickrClient.ParameterKeys.NoJSONCallBack: FlickrClient.ParameterValues.NoJSONCallBack,
                           FlickrClient.ParameterKeys.Extras: ParameterValues.imageURLMedium,
+                          FlickrClient.ParameterKeys.PerPage: FlickrClient.ParameterValues.PageResultLimit,
                           FlickrClient.ParameterKeys.Bbox: bbox]
         
         let url = buildURLWithComponents(scheme, host: host, path: path, parameters: parameters)
@@ -77,25 +78,5 @@ extension FlickrClient {
             completionHandler(result: dataForImages, error: nil)
         }
     }
-    
-//    // Get URLs for a pin location, then download Data from urls.
-//    func retrieveImageData(pin: Pin, completionHandler: (result: [NSData]?, error: NSError?)->Void) {
-//        getPhotoURLsWithLocation(pin.latitude, longitude: pin.longitude) { (result, error) in
-//            if let error = error {
-//                print(error.userInfo["NSUnderlyingErrorKey"])
-//                print("ERROR HERE")
-//            } else if let result = result as? [NSURL] {
-//                self.downloadDataFromURLs(result, pin: pin){ (result, error) in
-//                    if let error = error {
-//                        completionHandler(result: nil, error: error)
-//                    } else {
-//                        completionHandler(result: result, error: nil)
-//                    }
-//                    
-//                }
-//            }
-//            
-//        }
-//    }
     
 }

@@ -60,14 +60,11 @@ class PhotoAlbumViewController: UIViewController {
 			if let error = error {
 				print(error.userInfo["NSUnderlyingErrorKey"])
 			} else if let result = result {
-				print("Gonna Create Photos")
 				self.performOnMainThread(){
 					for i in result {
 						let url = String(i)
 						_ = Photo(pin: self.pin, url: url)
 					}
-					self.collectionView.reloadData()
-					print("Reload CollectionView")
 				}
 			}
 		}
@@ -117,10 +114,9 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 				if let error = error {
 					print(error.userInfo["NSUnderlyingErrorKey"])
 				} else {
-					photo.imageData = result!
-					let image = UIImage(data: result!)
-					
 					self.performOnMainThread(){
+						photo.imageData = result!
+						let image = UIImage(data: result!)
 						cell.imageView.image = image
 					}
 				}
@@ -137,8 +133,8 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 			numberOfItems = 0
 			return numberOfItems
 		}
-		numberOfItems = min(fetchedItems, 21)
-		return fetchedItems
+		numberOfItems = fetchedItems
+		return numberOfItems
 	}
 	
 	func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
@@ -206,19 +202,14 @@ extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate {
 	}
 	
 	func controllerDidChangeContent(controller: NSFetchedResultsController) {
-	
-//			collectionView.reloadItemsAtIndexPaths(insertedItemIndex)
-//			collectionView.deleteItemsAtIndexPaths(deletedItemIndex)
-	
-//		    collectionView.reloadData()
-		
+		// Source: https://gist.github.com/iwasrobbed/5528897
 		collectionView!.performBatchUpdates({ () -> Void in
 			for operation: NSBlockOperation in self.blockOperations {
 				operation.start()
 			}
 		}, completion: { (finished) -> Void in
 				self.blockOperations.removeAll(keepCapacity: false)
-		})
+			})
 		print("FC did finish making changes")
 	}
 
