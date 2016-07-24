@@ -87,8 +87,8 @@
                                     <constraint firstAttribute="height" constant="148" id="Urh-Sy-4ic"/>
                                 </constraints>
                             </mapView>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="frk-Kw-e6c">
-                                <rect key="frame" x="0.0" y="212" width="600" height="388"/>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="frk-Kw-e6c">
+                                <rect key="frame" x="0.0" y="212" width="600" height="344"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="eMZ-ty-ak6">
                                     <size key="itemSize" width="50" height="50"/>
