@@ -79,7 +79,20 @@ class PhotoAlbumViewController: UIViewController {
 	}
 	
 	@IBAction func bottomBarButtonPressed(sender: UIBarButtonItem) {
-		
+		if selectedItems.isEmpty {
+			for photo in fetchedResultsController.fetchedObjects as! [Photo] {
+				fetchedResultsController.managedObjectContext.deleteObject(photo)
+			}
+			getPhotoURLs()
+		} else {
+			for indexPath in selectedItems {
+				guard let photo = fetchedResultsController.objectAtIndexPath(indexPath) as? Photo else {
+					continue
+				}
+				fetchedResultsController.managedObjectContext.deleteObject(photo)
+			}
+			selectedItems.removeAll()
+		}
 	}
 	
 	func makeRegionWithAnnotation(annotation: MKAnnotation) -> MKCoordinateRegion {
@@ -102,13 +115,13 @@ class PhotoAlbumViewController: UIViewController {
 extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDataSource {
 	
 	func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+		
 		let cell = collectionView.dequeueReusableCellWithReuseIdentifier("PhotoCell", forIndexPath: indexPath) as! PhotoCell
 		cell.activityIndicator.hidden = true
-		
 		let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
+		
 		if let imageData = photo.imageData {
 			cell.imageView.image = UIImage(data: imageData)
-			print("Existing Image Assigned")
 		} else {
 			cell.imageView.image = UIImage(named: "placeholder")
 			cell.activityIndicator.startAnimating()
@@ -128,9 +141,9 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 					}
 				}
 			}
-			print("New Image Downloaded and Assigned")
 		}
 		
+		setCellAlphaValue(cell, indexPath: indexPath)
 		return cell
 	}
 	
@@ -146,19 +159,24 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 	
 	func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
 		let cell = collectionView.cellForItemAtIndexPath(indexPath) as! PhotoCell
-		toggleCellFromSelectedItems(cell, indexPath: indexPath)
-	}
-	
-	
-	func toggleCellFromSelectedItems(cell: PhotoCell, indexPath: NSIndexPath) {
 		if let index = selectedItems.indexOf(indexPath) {
-			cell.imageView.alpha = 1.0
 			selectedItems.removeAtIndex(index)
 		} else {
-			cell.imageView.alpha = 0.5
 			selectedItems.append(indexPath)
 		}
+		setCellAlphaValue(cell, indexPath: indexPath)
 	}
+	
+	
+	func setCellAlphaValue(cell: PhotoCell, indexPath: NSIndexPath) {
+		if selectedItems.indexOf(indexPath) != nil {
+			cell.imageView.alpha = 0.55
+		} else {
+			cell.imageView.alpha = 1.0
+		}
+	}
+	
+
 }
 
 
