@@ -10,8 +10,11 @@ class PhotoAlbumViewController: UIViewController {
 	var fetchedResultsController: NSFetchedResultsController!
 	let stack = CoreDataStack.sharedInstance
 	var blockOperations: [NSBlockOperation] = []
-	var insertedItemIndex: [NSIndexPath]!
-	var deletedItemIndex: [NSIndexPath]!
+	var selectedItems: [NSIndexPath] = [] {
+		didSet {
+			bottomBarButton.title = selectedItems.isEmpty ? "New Collection" : "Delete Images"
+		}
+	}
 	
 	@IBOutlet weak var mapView: MKMapView!
 	@IBOutlet weak var collectionView: UICollectionView!
@@ -100,6 +103,7 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 	
 	func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCellWithReuseIdentifier("PhotoCell", forIndexPath: indexPath) as! PhotoCell
+		cell.activityIndicator.hidden = true
 		
 		let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
 		if let imageData = photo.imageData {
@@ -108,6 +112,7 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 		} else {
 			cell.imageView.image = UIImage(named: "placeholder")
 			cell.activityIndicator.startAnimating()
+			cell.activityIndicator.hidden = false
 			let url = NSURL(string: photo.url)
 			
 			FlickrClient.sharedInstance.downloadDataFromURL(url!) { (result, error) in
@@ -118,6 +123,7 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 						photo.imageData = result!
 						let image = UIImage(data: result!)
 						cell.activityIndicator.stopAnimating()
+						cell.activityIndicator.hidden = true
 						cell.imageView.image = image
 					}
 				}
@@ -139,14 +145,20 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 	}
 	
 	func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-		
-		
+		let cell = collectionView.cellForItemAtIndexPath(indexPath) as! PhotoCell
+		toggleCellFromSelectedItems(cell, indexPath: indexPath)
 	}
 	
-	func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath) {
-		
-	}
 	
+	func toggleCellFromSelectedItems(cell: PhotoCell, indexPath: NSIndexPath) {
+		if let index = selectedItems.indexOf(indexPath) {
+			cell.imageView.alpha = 1.0
+			selectedItems.removeAtIndex(index)
+		} else {
+			cell.imageView.alpha = 0.5
+			selectedItems.append(indexPath)
+		}
+	}
 }
 
 
