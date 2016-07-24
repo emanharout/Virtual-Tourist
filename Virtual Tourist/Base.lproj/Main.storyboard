@@ -107,16 +107,22 @@
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Wlj-ys-92y">
                                                     <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                                 </imageView>
+                                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="CJY-ac-e9H">
+                                                    <rect key="frame" x="15" y="15" width="20" height="20"/>
+                                                </activityIndicatorView>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
                                         <constraints>
                                             <constraint firstAttribute="bottom" secondItem="Wlj-ys-92y" secondAttribute="bottom" id="AlC-8K-Bak"/>
+                                            <constraint firstItem="CJY-ac-e9H" firstAttribute="centerY" secondItem="KH8-Tk-LU2" secondAttribute="centerY" id="Cvo-N0-wD3"/>
                                             <constraint firstAttribute="trailing" secondItem="Wlj-ys-92y" secondAttribute="trailing" id="GSP-an-wru"/>
                                             <constraint firstItem="Wlj-ys-92y" firstAttribute="leading" secondItem="KH8-Tk-LU2" secondAttribute="leading" id="M7O-Y9-is0"/>
+                                            <constraint firstItem="CJY-ac-e9H" firstAttribute="centerX" secondItem="KH8-Tk-LU2" secondAttribute="centerX" id="M8U-2M-oPP"/>
                                             <constraint firstItem="Wlj-ys-92y" firstAttribute="top" secondItem="KH8-Tk-LU2" secondAttribute="top" id="Rdj-7q-8mG"/>
                                         </constraints>
                                         <connections>
+                                            <outlet property="activityIndicator" destination="CJY-ac-e9H" id="t7p-qM-C2b"/>
                                             <outlet property="imageView" destination="Wlj-ys-92y" id="JAF-fi-4vK"/>
                                         </connections>
                                     </collectionViewCell>

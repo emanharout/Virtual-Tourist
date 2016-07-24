@@ -106,8 +106,8 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 			cell.imageView.image = UIImage(data: imageData)
 			print("Existing Image Assigned")
 		} else {
-			
 			cell.imageView.image = UIImage(named: "placeholder")
+			cell.activityIndicator.startAnimating()
 			let url = NSURL(string: photo.url)
 			
 			FlickrClient.sharedInstance.downloadDataFromURL(url!) { (result, error) in
@@ -117,6 +117,7 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 					self.performOnMainThread(){
 						photo.imageData = result!
 						let image = UIImage(data: result!)
+						cell.activityIndicator.stopAnimating()
 						cell.imageView.image = image
 					}
 				}
