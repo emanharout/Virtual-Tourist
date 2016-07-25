@@ -66,6 +66,7 @@ class PhotoAlbumViewController: UIViewController {
 						_ = Photo(pin: self.pin, url: url)
 					}
 					self.pageCounter = (self.pageCounter < pages) ? self.pageCounter + 1 : 1
+					self.stack.save()
 					print("page counter number: \(self.pageCounter)")
 				}
 			}
@@ -86,6 +87,7 @@ class PhotoAlbumViewController: UIViewController {
 				fetchedResultsController.managedObjectContext.deleteObject(photo)
 			}
 			selectedItems.removeAll()
+			stack.save()
 		}
 	}
 	

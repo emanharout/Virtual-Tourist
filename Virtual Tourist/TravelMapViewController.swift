@@ -91,6 +91,7 @@ extension TravelMapViewController: MKMapViewDelegate {
 				let coordinate = mapView.convertPoint(longTapPoint, toCoordinateFromView: mapView)
 				
 				let annotation = Pin(latitude: coordinate.latitude, longitude: coordinate.longitude, context: stack.context)
+				stack.save()
 				
 				mapView.addAnnotation(annotation)
 			}
