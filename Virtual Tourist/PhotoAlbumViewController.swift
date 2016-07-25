@@ -6,36 +6,32 @@ import CoreData
 
 class PhotoAlbumViewController: UIViewController {
 	
+	@IBOutlet weak var mapView: MKMapView!
+	@IBOutlet weak var collectionView: UICollectionView!
+	@IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
+	@IBOutlet weak var bottomBarButton: UIBarButtonItem!
+	
 	var pin: Pin!
 	var fetchedResultsController: NSFetchedResultsController!
 	let stack = CoreDataStack.sharedInstance
 	var blockOperations: [NSBlockOperation] = []
+	var pageCounter = 1
 	var selectedItems: [NSIndexPath] = [] {
 		didSet {
 			bottomBarButton.title = selectedItems.isEmpty ? "New Collection" : "Delete Images"
 		}
 	}
 	
-	@IBOutlet weak var mapView: MKMapView!
-	@IBOutlet weak var collectionView: UICollectionView!
-	@IBOutlet weak var imageView: UIImageView!
-	@IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
-	@IBOutlet weak var bottomBarButton: UIBarButtonItem!
-	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		mapView.addAnnotation(pin)
-		mapView.region = makeRegionWithAnnotation(pin)
-		
+		setupMapView()
 		setupFlowLayout()
+		
 		navigationController?.setToolbarHidden(false, animated: true)
 		
 		if fetchPhotos().isEmpty {
 			getPhotoURLs()
-		} else {
-			// Setup UI
-			print("fetch was not empty")
 		}
 	}
 	
@@ -55,27 +51,25 @@ class PhotoAlbumViewController: UIViewController {
 		} catch {
 			print("Error when performing fetch")
 		}
+
 		return results
 	}
 	
 	func getPhotoURLs() {
-		FlickrClient.sharedInstance.getPhotoURLsWithLocation(pin.latitude, longitude: pin.longitude) { (result, error) in
+		FlickrClient.sharedInstance.getPhotoURLsWithLocation(pin.latitude, longitude: pin.longitude, pageNumber: pageCounter) { (result, pages, error) in
 			if let error = error {
 				print(error.userInfo["NSUnderlyingErrorKey"])
-			} else if let result = result {
+			} else if let result = result, pages = pages {
 				self.performOnMainThread(){
 					for i in result {
 						let url = String(i)
 						_ = Photo(pin: self.pin, url: url)
 					}
+					self.pageCounter = (self.pageCounter < pages) ? self.pageCounter + 1 : 1
+					print("page counter number: \(self.pageCounter)")
 				}
 			}
 		}
-	}
-	
-	func performOnMainThread(block: ()->Void) {
-		let mainQueue = dispatch_get_main_queue()
-		dispatch_async(mainQueue, block)
 	}
 	
 	@IBAction func bottomBarButtonPressed(sender: UIBarButtonItem) {
@@ -95,6 +89,7 @@ class PhotoAlbumViewController: UIViewController {
 		}
 	}
 	
+	// MARK: UI-Related Functions
 	func makeRegionWithAnnotation(annotation: MKAnnotation) -> MKCoordinateRegion {
 		let center = annotation.coordinate
 		let span = MKCoordinateSpanMake(0.002, 0.002)
@@ -108,14 +103,25 @@ class PhotoAlbumViewController: UIViewController {
 		flowLayout.minimumInteritemSpacing = CGFloat(5.0)
 		flowLayout.itemSize = CGSize(width: itemDimension, height: itemDimension)
 	}
+	
+	func setupMapView() {
+		mapView.addAnnotation(pin)
+		mapView.region = makeRegionWithAnnotation(pin)
+	}
+	
+	
+	func performOnMainThread(block: ()->Void) {
+		let mainQueue = dispatch_get_main_queue()
+		dispatch_async(mainQueue, block)
+	}
 }
 
 
 
 extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDataSource {
 	
+	// MARK: CollectionView Delegate Functions
 	func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-		
 		let cell = collectionView.dequeueReusableCellWithReuseIdentifier("PhotoCell", forIndexPath: indexPath) as! PhotoCell
 		cell.activityIndicator.hidden = true
 		let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
@@ -123,26 +129,9 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 		if let imageData = photo.imageData {
 			cell.imageView.image = UIImage(data: imageData)
 		} else {
-			cell.imageView.image = UIImage(named: "placeholder")
-			cell.activityIndicator.startAnimating()
-			cell.activityIndicator.hidden = false
-			let url = NSURL(string: photo.url)
-			
-			FlickrClient.sharedInstance.downloadDataFromURL(url!) { (result, error) in
-				if let error = error {
-					print(error.userInfo["NSUnderlyingErrorKey"])
-				} else {
-					self.performOnMainThread(){
-						photo.imageData = result!
-						let image = UIImage(data: result!)
-						cell.activityIndicator.stopAnimating()
-						cell.activityIndicator.hidden = true
-						cell.imageView.image = image
-					}
-				}
-			}
+			assignCellNewPhoto(cell, photo: photo)
 		}
-		
+
 		setCellAlphaValue(cell, indexPath: indexPath)
 		return cell
 	}
@@ -167,6 +156,26 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 		setCellAlphaValue(cell, indexPath: indexPath)
 	}
 	
+	func assignCellNewPhoto(cell: PhotoCell, photo: Photo) {
+		cell.imageView.image = UIImage(named: "placeholder")
+		cell.activityIndicator.startAnimating()
+		cell.activityIndicator.hidden = false
+		let url = NSURL(string: photo.url)
+		
+		FlickrClient.sharedInstance.downloadDataFromURL(url!) { (result, error) in
+			if let error = error {
+				print(error.userInfo["NSUnderlyingErrorKey"])
+			} else {
+				self.performOnMainThread(){
+					photo.imageData = result!
+					let image = UIImage(data: result!)
+					cell.activityIndicator.stopAnimating()
+					cell.activityIndicator.hidden = true
+					cell.imageView.image = image
+				}
+			}
+		}
+	}
 	
 	func setCellAlphaValue(cell: PhotoCell, indexPath: NSIndexPath) {
 		if selectedItems.indexOf(indexPath) != nil {
@@ -175,25 +184,20 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 			cell.imageView.alpha = 1.0
 		}
 	}
-	
 
 }
 
 
 
 extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate {
-	
+	// MARK: FetchedResultsController Delegate Methods
 	func controllerWillChangeContent(controller: NSFetchedResultsController) {
-		print("Will make change")
-		
 	}
 
 	func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
 		
 		switch type {
 		case .Insert:
-			print("Insert Object Index: \(newIndexPath?.row)")
-			
 			blockOperations.append(
 				NSBlockOperation(){ [weak self] in
 					if let this = self {
@@ -201,9 +205,7 @@ extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate {
 					}
 				}
 			)
-				
 		case .Update:
-			print("Update Object Index: \(indexPath?.row)")
 			blockOperations.append(
 				NSBlockOperation() { [weak self] in
 					if let this = self {
@@ -212,7 +214,6 @@ extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate {
 				}
 			)
 		case .Delete:
-			print("Delete Object Index: \(indexPath?.row)")
 			blockOperations.append(
 				NSBlockOperation() { [weak self] in
 					if let this = self {
@@ -221,7 +222,6 @@ extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate {
 				}
 			)
 		case .Move:
-			print("Move Object Index: \(indexPath?.row) to New Index: \(newIndexPath?.row)")
 			blockOperations.append(
 				NSBlockOperation() { [weak self] in
 					if let this = self {
@@ -233,30 +233,15 @@ extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate {
 	}
 	
 	func controllerDidChangeContent(controller: NSFetchedResultsController) {
+		
 		// Source: https://gist.github.com/iwasrobbed/5528897
-		collectionView!.performBatchUpdates({ () -> Void in
-			for operation: NSBlockOperation in self.blockOperations {
+		let batchUpdatesToPerform = {() -> Void in
+			for operation in self.blockOperations {
 				operation.start()
 			}
-		}, completion: { (finished) -> Void in
-				self.blockOperations.removeAll(keepCapacity: false)
-			})
-		print("FC did finish making changes")
+		}
+		collectionView!.performBatchUpdates(batchUpdatesToPerform) { (finished) -> Void in
+			self.blockOperations.removeAll(keepCapacity: false)
+		}
 	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }

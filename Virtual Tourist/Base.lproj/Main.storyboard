@@ -22,6 +22,9 @@
                                 <subviews>
                                     <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="odv-Dz-sff">
                                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                        <connections>
+                                            <outlet property="delegate" destination="BYZ-38-t0r" id="CHA-m2-sQV"/>
+                                        </connections>
                                     </mapView>
                                     <view hidden="YES" contentMode="scaleToFill" placeholderIntrinsicWidth="600" placeholderIntrinsicHeight="44" translatesAutoresizingMaskIntoConstraints="NO" id="TfS-Ze-pYw">
                                         <rect key="frame" x="0.0" y="600" width="600" height="0.0"/>

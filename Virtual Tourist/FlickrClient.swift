@@ -58,6 +58,7 @@ extension FlickrClient {
         static let NoJSONCallBack = "nojsoncallback"
         static let Bbox = "bbox"
         static let Extras = "extras"
+		static let Page = "page"
 		static let PerPage = "per_page"
     }
         
@@ -67,13 +68,14 @@ extension FlickrClient {
         static let JSONFormat = "json"
         static let NoJSONCallBack = "1"
         static let imageURLMedium = "url_m"
-		static let PageResultLimit = "21"
+		static let ResultLimit = "21"
     }
     
     struct ResponseKeys {
         static let Photos = "photos"
         static let Photo = "photo"
         static let URL = "url_m"
+		static let MaxPage = "pages"
     }
     
 }

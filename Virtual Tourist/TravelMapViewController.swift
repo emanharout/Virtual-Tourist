@@ -17,15 +17,9 @@ class TravelMapViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		mapView.delegate = self
 		setupMapviewGestureRecognizer()
 		fetchPins()
-		mapPosition = MapPosition(mapView: mapView, storedMapRegion: nil)
-		mapPosition.retrieveMapRegion()
-		
-		if mapPosition.storedMapRegion != nil && !mapPosition.mapPositionWasSet {
-			mapView.centerCoordinate = mapPosition.storedMapRegion!.center
-		}
+		configureMapPosition()
 	}
 	
 	override func viewWillAppear(animated: Bool) {
@@ -77,7 +71,7 @@ class TravelMapViewController: UIViewController {
 			print("Failed to fetch Pin objects")
 		}
 	}
-	
+
 	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
 		if segue.identifier == "showPinPhotos" {
 			let pin = sender as! Pin
@@ -87,10 +81,9 @@ class TravelMapViewController: UIViewController {
 	}
 }
 
-
-
 extension TravelMapViewController: MKMapViewDelegate {
 	
+	// MARK: Map-Related Functions
 	func addPin() {
 		if let gestureRecognizer = mapView.gestureRecognizers?[0] {
 			if gestureRecognizer.state == .Began && !editMode {
@@ -115,6 +108,14 @@ extension TravelMapViewController: MKMapViewDelegate {
 		mapView.addGestureRecognizer(gestureRec)
 	}
 	
+	func configureMapPosition() {
+		mapPosition = MapPosition(mapView: mapView, storedMapRegion: nil)
+		mapPosition.retrieveMapRegion()
+		
+		if mapPosition.storedMapRegion != nil && !mapPosition.mapPositionWasSet {
+			mapView.centerCoordinate = mapPosition.storedMapRegion!.center
+		}
+	}
 	
 	// MARK: Delegate Methods
 	func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
@@ -128,6 +129,7 @@ extension TravelMapViewController: MKMapViewDelegate {
 			stack.context.deleteObject(annotation)
 			stack.save()
 		} else {
+			mapView.deselectAnnotation(annotation, animated: false)
 			performSegueWithIdentifier("showPinPhotos", sender: annotation)
 		}
 	}
@@ -146,39 +148,3 @@ extension TravelMapViewController: MKMapViewDelegate {
 		return annotView
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
