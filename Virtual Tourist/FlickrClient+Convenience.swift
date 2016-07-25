@@ -6,19 +6,6 @@ import Foundation
 
 extension FlickrClient {
 	
-//    func downloadDataFromURL(photoURL: NSURL, completionHandler: (result: NSData?, error: NSError?)->Void) {
-//        let queue = dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)
-//        dispatch_async(queue) {
-//            if let imageData = NSData(contentsOfURL: photoURL) {
-//                completionHandler(result: imageData, error: nil)
-//            } else {
-//                let userInfo = ["NSUnderlyingErrorKey": "Failed to access image data from url: \(photoURL)"]
-//                let error = NSError(domain: "downloadImages", code: 10, userInfo: userInfo)
-//                completionHandler(result: nil, error: error)
-//            }
-//        }
-//    }
-	
 	func downloadDataWithURL(photoURL: NSURL, completionHandler: (data: NSData?, error: NSError?)->Void) -> NSURLSessionDataTask {
 		let task = NSURLSession.sharedSession().dataTaskWithURL(photoURL) {(data, response, error) in
 			guard error == nil else {

@@ -1,10 +1,4 @@
-//
-//  AppDelegate.swift
-//  Virtual Tourist
-//
-//  Created by Emmanuoel Eldridge on 7/6/16.
-//  Copyright © 2016 Emmanuoel Haroutunian. All rights reserved.
-//
+
 
 import UIKit
 
