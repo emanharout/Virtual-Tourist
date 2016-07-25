@@ -37,8 +37,8 @@ class PhotoAlbumViewController: UIViewController {
 	
 	func fetchPhotos() -> [Photo] {
 		let fetchRequest = NSFetchRequest(entityName: "Photo")
-		fetchRequest.fetchLimit = 21
-		fetchRequest.sortDescriptors = [NSSortDescriptor]()
+		let sortDescriptor = NSSortDescriptor(key: "url", ascending: true)
+		fetchRequest.sortDescriptors = [sortDescriptor]
 		let predicate = NSPredicate(format: "pin = %@", argumentArray: [pin])
 		fetchRequest.predicate = predicate
 		fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: stack.context, sectionNameKeyPath: nil, cacheName: nil)
@@ -67,7 +67,6 @@ class PhotoAlbumViewController: UIViewController {
 					}
 					self.pageCounter = (self.pageCounter < pages) ? self.pageCounter + 1 : 1
 					self.stack.save()
-					print("page counter number: \(self.pageCounter)")
 				}
 			}
 		}
@@ -132,6 +131,7 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 			cell.imageView.image = UIImage(data: imageData)
 		} else {
 			assignCellNewPhoto(cell, photo: photo)
+			stack.save()
 		}
 
 		setCellAlphaValue(cell, indexPath: indexPath)
@@ -162,21 +162,22 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 		cell.imageView.image = UIImage(named: "placeholder")
 		cell.activityIndicator.startAnimating()
 		cell.activityIndicator.hidden = false
-		let url = NSURL(string: photo.url)
+		let url = NSURL(string: photo.url)!
 		
-		FlickrClient.sharedInstance.downloadDataFromURL(url!) { (result, error) in
+		let task = FlickrClient.sharedInstance.downloadDataWithURL(url) { (data, error) in
 			if let error = error {
 				print(error.userInfo["NSUnderlyingErrorKey"])
 			} else {
 				self.performOnMainThread(){
-					photo.imageData = result!
-					let image = UIImage(data: result!)
+					photo.imageData = data!
+					let image = UIImage(data: data!)
 					cell.activityIndicator.stopAnimating()
 					cell.activityIndicator.hidden = true
 					cell.imageView.image = image
 				}
 			}
 		}
+		cell.task = task
 	}
 	
 	func setCellAlphaValue(cell: PhotoCell, indexPath: NSIndexPath) {
