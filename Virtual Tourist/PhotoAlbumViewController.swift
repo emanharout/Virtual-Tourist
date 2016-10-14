@@ -59,15 +59,14 @@ class PhotoAlbumViewController: UIViewController {
 		FlickrClient.sharedInstance.getPhotoURLsWithLocation(pin.latitude, longitude: pin.longitude, pageNumber: pageCounter) { (result, pages, error) in
 			if let error = error {
 				print(error.userInfo["NSUnderlyingErrorKey"])
-			} else if let result = result, pages = pages {
-				self.performOnMainThread(){
-					for i in result {
-						let url = String(i)
-						_ = Photo(pin: self.pin, url: url)
-					}
-					self.pageCounter = (self.pageCounter < pages) ? self.pageCounter + 1 : 1
-					self.stack.save()
+			} else if let result = result, let pages = pages {
+				for i in result {
+					let url = String(i)
+					print("URL IS \(url)")
+					_ = Photo(pin: self.pin, url: url)
 				}
+				self.pageCounter = (self.pageCounter < pages) ? self.pageCounter + 1 : 1
+				self.stack.save()
 			}
 		}
 	}

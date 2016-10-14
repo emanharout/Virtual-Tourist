@@ -117,8 +117,8 @@
 		03D8BDD21D2FFB9E007A95F8 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				03D8BE0E1D386DD1007A95F8 /* PhotoAlbumViewController.swift */,
 				03F602EB1D2D8481006E2679 /* TravelMapViewController.swift */,
+				03D8BE0E1D386DD1007A95F8 /* PhotoAlbumViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -268,21 +268,24 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Emmanuoel Haroutunian";
 				TargetAttributes = {
 					03F602E51D2D8481006E2679 = {
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = 45P953T7BD;
+						LastSwiftMigration = 0800;
 					};
 					03F602F91D2D8481006E2679 = {
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = 45P953T7BD;
+						LastSwiftMigration = 0800;
 						TestTargetID = 03F602E51D2D8481006E2679;
 					};
 					03F603041D2D8481006E2679 = {
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = 45P953T7BD;
+						LastSwiftMigration = 0800;
 						TestTargetID = 03F602E51D2D8481006E2679;
 					};
 				};
@@ -500,6 +503,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.eman.Virtual-Tourist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
@@ -512,6 +516,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.eman.Virtual-Tourist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
 		};
@@ -523,6 +528,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.eman.Virtual-TouristTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 2.3;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Virtual Tourist.app/Virtual Tourist";
 			};
 			name = Debug;
@@ -535,6 +541,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.eman.Virtual-TouristTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 2.3;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Virtual Tourist.app/Virtual Tourist";
 			};
 			name = Release;
@@ -546,6 +553,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.eman.Virtual-TouristUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 2.3;
 				TEST_TARGET_NAME = "Virtual Tourist";
 			};
 			name = Debug;
@@ -557,6 +565,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.eman.Virtual-TouristUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 2.3;
 				TEST_TARGET_NAME = "Virtual Tourist";
 			};
 			name = Release;

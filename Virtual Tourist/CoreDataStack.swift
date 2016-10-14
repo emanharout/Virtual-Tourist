@@ -65,7 +65,7 @@ struct CoreDataStack {
             return nil
         }
         
-        self.dbURL = docUrl.URLByAppendingPathComponent("model.sqlite")
+        self.dbURL = docUrl.URLByAppendingPathComponent("model.sqlite")!
 		
 		let options = [NSInferMappingModelAutomaticallyOption: true, NSMigratePersistentStoresAutomaticallyOption : true]
         
@@ -98,27 +98,26 @@ struct CoreDataStack {
 extension CoreDataStack {
     
     func save() {
-        context.performBlockAndWait(){
-            
-            if self.context.hasChanges{
-                do{
-                    try self.context.save()
-                }catch{
-                    fatalError("Error while saving main context: \(error)")
-                }
-                
-                self.persistingContext.performBlock(){
-                    do{
-                        try self.persistingContext.save()
-                    }catch{
-                        fatalError("Error while saving persisting context: \(error)")
-                    }
-                }
-            }
-        }
-        
-        
-        
-    }
+		let mainQueue = dispatch_get_main_queue()
+		dispatch_async(mainQueue) {
+			self.context.performBlockAndWait(){
+				if self.context.hasChanges{
+					do{
+						try self.context.save()
+					}catch{
+						fatalError("Error while saving main context: \(error)")
+					}
+			
+				self.persistingContext.performBlock(){
+					do{
+						try self.persistingContext.save()
+					}catch{
+						fatalError("Error while saving persisting context: \(error)")
+					}
+				}
+				}
+			}
+		}
+	}
 }
 
