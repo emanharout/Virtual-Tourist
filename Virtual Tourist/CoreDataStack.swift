@@ -7,7 +7,6 @@ import CoreData
 // MARK:  - Main
 struct CoreDataStack {
     
-    
     // MARK:  - Properties
     fileprivate let model : NSManagedObjectModel
     fileprivate let coordinator : NSPersistentStoreCoordinator
@@ -35,9 +34,7 @@ struct CoreDataStack {
             return nil
         }
         self.model = model
-        
-        
-        
+	
         // Create the store coordinator
         coordinator = NSPersistentStoreCoordinator(managedObjectModel: model)
         
@@ -55,7 +52,6 @@ struct CoreDataStack {
         backgroundContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         backgroundContext.parent = context
         backgroundContext.name = "Background"
-        
         
         // Add a SQLite store located in the documents folder
         let fm = FileManager.default

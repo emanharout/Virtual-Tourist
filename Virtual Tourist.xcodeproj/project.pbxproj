@@ -108,8 +108,8 @@
 				03D8BDFA1D30A56B007A95F8 /* Photo.swift */,
 				03D8BDFB1D30A56B007A95F8 /* Pin+CoreDataProperties.swift */,
 				03D8BDFC1D30A56B007A95F8 /* Pin.swift */,
-				03D8BDE61D305F2A007A95F8 /* Model.xcdatamodeld */,
 				03D8BE011D30A801007A95F8 /* CoreDataStack.swift */,
+				03D8BDE61D305F2A007A95F8 /* Model.xcdatamodeld */,
 			);
 			name = CoreData;
 			sourceTree = "<group>";

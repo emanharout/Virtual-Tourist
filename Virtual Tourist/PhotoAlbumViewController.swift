@@ -184,7 +184,6 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 			cell.imageView.alpha = 1.0
 		}
 	}
-	
 }
 
 
