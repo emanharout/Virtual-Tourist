@@ -12,7 +12,7 @@ struct bboxCoordinate {
     static let searchLatRange = (min: -90.0, max: 90.0)
     let halfDiameter = 0.5
     
-    func makeBbox(latitude: Double, longitude: Double)-> String {
+    func makeBbox(_ latitude: Double, longitude: Double)-> String {
         
         if latitude > bboxCoordinate.searchLatRange.max || latitude < bboxCoordinate.searchLatRange.min || longitude > bboxCoordinate.searchLongRange.max || longitude < bboxCoordinate.searchLongRange.min {
             print("Invalid latitude or longitude value")
@@ -36,5 +36,5 @@ struct bboxCoordinate {
         return bboxString
     }
 
-    private init(){}
+    fileprivate init(){}
 }

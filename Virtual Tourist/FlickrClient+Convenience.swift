@@ -6,35 +6,35 @@ import Foundation
 
 extension FlickrClient {
 	
-	func downloadDataWithURL(photoURL: NSURL, completionHandler: (data: NSData?, error: NSError?)->Void) -> NSURLSessionDataTask {
-		let task = NSURLSession.sharedSession().dataTaskWithURL(photoURL) {(data, response, error) in
+	func downloadDataWithURL(_ photoURL: URL, completionHandler: @escaping (_ data: Data?, _ error: NSError?)->Void) -> URLSessionDataTask {
+		let task = URLSession.shared.dataTask(with: photoURL, completionHandler: {(data, response, error) in
 			guard error == nil else {
 				print("Error: \(error?.localizedDescription)")
-				completionHandler(data: nil, error: error)
+				completionHandler(nil, error as NSError?)
 				return
 			}
 			
-			guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
+			guard let statusCode = (response as? HTTPURLResponse)?.statusCode , statusCode >= 200 && statusCode <= 299 else {
 				let userInfo = ["NSUnderlyingErrorKey": "Non 2xx status code"]
 				let error = NSError(domain: "taskForGETMethod", code: 10, userInfo: userInfo)
-				completionHandler(data: nil, error: error)
+				completionHandler(nil, error)
 				return
 			}
 			
 			guard let data = data else {
 				let userInfo = ["NSUnderlyingErrorKey": "No data retrieved from server"]
 				let error = NSError(domain: "taskForGETMethod", code: 10, userInfo: userInfo)
-				completionHandler(data: nil, error: error)
+				completionHandler(nil, error)
 				return
 			}
 			
-			completionHandler(data: data, error: nil)
-		}
+			completionHandler(data, nil)
+		})
 		task.resume()
 		return task
 	}
-
-	func getPhotoURLsWithLocation(latitude: Double, longitude: Double, pageNumber: Int, completionHandlerForSearchPhotos: (result: [NSURL]?, pages: Int?, error: NSError?)->Void) {
+	
+	func getPhotoURLsWithLocation(_ latitude: Double, longitude: Double, pageNumber: Int, completionHandlerForSearchPhotos: @escaping (_ result: [URL]?, _ pages: Int?, _ error: NSError?)->Void) {
 		let bbox = bboxCoordinate.sharedInstance.makeBbox(latitude, longitude: longitude)
 		let scheme = FlickrClient.Constants.Scheme
 		let host = FlickrClient.Constants.Host
@@ -48,11 +48,11 @@ extension FlickrClient {
 		                  FlickrClient.ParameterKeys.PerPage: FlickrClient.ParameterValues.ResultLimit,
 		                  FlickrClient.ParameterKeys.Bbox: bbox]
 		
-		let url = buildURLWithComponents(scheme, host: host, path: path, parameters: parameters)
+		let url = buildURLWithComponents(scheme, host: host, path: path, parameters: parameters as NSDictionary)
 		
-		taskForGETMethod(url) { (result, error) in
+		_ = taskForGETMethod(url) { (result, error) in
 			if let error = error {
-				completionHandlerForSearchPhotos(result: nil, pages: nil, error: error)
+				completionHandlerForSearchPhotos(nil, nil, error)
 			} else {
 				if let result = result as? [String: AnyObject] {
 					guard let photosDict = result[FlickrClient.ResponseKeys.Photos] as? [String: AnyObject],
@@ -60,25 +60,25 @@ extension FlickrClient {
 						let maxPageNumber = photosDict[FlickrClient.ResponseKeys.MaxPage] as? Int else {
 							let userInfo = ["NSUnderlyingErrorKey": "Could not access photos array"]
 							let error = NSError(domain: "searchPhotosWithLocation", code: 10, userInfo: userInfo)
-							completionHandlerForSearchPhotos(result: nil, pages: nil, error: error)
+							completionHandlerForSearchPhotos(nil, nil, error)
 							return
 					}
 					
-					var photoURLs = [NSURL]()
+					var photoURLs = [URL]()
 					for photo in photosArray {
 						if let urlString = photo[FlickrClient.ResponseKeys.URL] as? String,
-							let url = NSURL(string: urlString) {
+							let url = URL(string: urlString) {
 							photoURLs.append(url)
 						} else {
 							print("No url found for photo")
 						}
 					}
 					
-					completionHandlerForSearchPhotos(result: photoURLs, pages: maxPageNumber, error: nil)
+					completionHandlerForSearchPhotos(photoURLs, maxPageNumber, nil)
 				}
 			}
 		}
 	}
-
+	
 	
 }

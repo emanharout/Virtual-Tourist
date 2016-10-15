@@ -10,7 +10,7 @@ import CoreData
 
 extension Photo {
 
-    @NSManaged var imageData: NSData?
+    @NSManaged var imageData: Data?
 	@NSManaged var url: String
     @NSManaged var pin: Pin
 

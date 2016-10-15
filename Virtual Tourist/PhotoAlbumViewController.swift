@@ -12,11 +12,11 @@ class PhotoAlbumViewController: UIViewController {
 	@IBOutlet weak var bottomBarButton: UIBarButtonItem!
 	
 	var pin: Pin!
-	var fetchedResultsController: NSFetchedResultsController!
+	var fetchedResultsController: NSFetchedResultsController<Photo>!
 	let stack = CoreDataStack.sharedInstance
-	var blockOperations: [NSBlockOperation] = []
+	var blockOperations: [BlockOperation] = []
 	var pageCounter = 1
-	var selectedItems: [NSIndexPath] = [] {
+	var selectedItems: [IndexPath] = [] {
 		didSet {
 			bottomBarButton.title = selectedItems.isEmpty ? "New Collection" : "Delete Images"
 		}
@@ -36,7 +36,7 @@ class PhotoAlbumViewController: UIViewController {
 	}
 	
 	func fetchPhotos() -> [Photo] {
-		let fetchRequest = NSFetchRequest(entityName: "Photo")
+		let fetchRequest: NSFetchRequest<Photo>! = NSFetchRequest(entityName: "Photo")
 		let sortDescriptor = NSSortDescriptor(key: "url", ascending: true)
 		fetchRequest.sortDescriptors = [sortDescriptor]
 		let predicate = NSPredicate(format: "pin = %@", argumentArray: [pin])
@@ -47,11 +47,11 @@ class PhotoAlbumViewController: UIViewController {
 		var results = [Photo]()
 		do {
 			try fetchedResultsController.performFetch()
-			results = fetchedResultsController.fetchedObjects as! [Photo]
+			results = fetchedResultsController.fetchedObjects!
 		} catch {
 			print("Error when performing fetch")
 		}
-
+		
 		return results
 	}
 	
@@ -61,7 +61,7 @@ class PhotoAlbumViewController: UIViewController {
 				print(error.userInfo["NSUnderlyingErrorKey"])
 			} else if let result = result, let pages = pages {
 				for i in result {
-					let url = String(i)
+					let url = String(describing: i)
 					print("URL IS \(url)")
 					_ = Photo(pin: self.pin, url: url)
 				}
@@ -71,18 +71,16 @@ class PhotoAlbumViewController: UIViewController {
 		}
 	}
 	
-	@IBAction func bottomBarButtonPressed(sender: UIBarButtonItem) {
+	@IBAction func bottomBarButtonPressed(_ sender: UIBarButtonItem) {
 		if selectedItems.isEmpty {
-			for photo in fetchedResultsController.fetchedObjects as! [Photo] {
-				fetchedResultsController.managedObjectContext.deleteObject(photo)
+			for photo in fetchedResultsController.fetchedObjects! {
+				fetchedResultsController.managedObjectContext.delete(photo)
 			}
 			getPhotoURLs()
 		} else {
 			for indexPath in selectedItems {
-				guard let photo = fetchedResultsController.objectAtIndexPath(indexPath) as? Photo else {
-					continue
-				}
-				fetchedResultsController.managedObjectContext.deleteObject(photo)
+				let photo = fetchedResultsController.object(at: indexPath)
+				fetchedResultsController.managedObjectContext.delete(photo)
 			}
 			selectedItems.removeAll()
 			stack.save()
@@ -90,7 +88,7 @@ class PhotoAlbumViewController: UIViewController {
 	}
 	
 	// MARK: UI-Related Functions
-	func makeRegionWithAnnotation(annotation: MKAnnotation) -> MKCoordinateRegion {
+	func makeRegionWithAnnotation(_ annotation: MKAnnotation) -> MKCoordinateRegion {
 		let center = annotation.coordinate
 		let span = MKCoordinateSpanMake(0.002, 0.002)
 		let region = MKCoordinateRegion(center: center, span: span)
@@ -110,9 +108,9 @@ class PhotoAlbumViewController: UIViewController {
 	}
 	
 	
-	func performOnMainThread(block: ()->Void) {
-		let mainQueue = dispatch_get_main_queue()
-		dispatch_async(mainQueue, block)
+	func performOnMainThread(_ block: @escaping ()->Void) {
+		let mainQueue = DispatchQueue.main
+		mainQueue.async(execute: block)
 	}
 }
 
@@ -121,10 +119,10 @@ class PhotoAlbumViewController: UIViewController {
 extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDataSource {
 	
 	// MARK: CollectionView Delegate Functions
-	func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-		let cell = collectionView.dequeueReusableCellWithReuseIdentifier("PhotoCell", forIndexPath: indexPath) as! PhotoCell
-		cell.activityIndicator.hidden = true
-		let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
+	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as! PhotoCell
+		cell.activityIndicator.isHidden = true
+		let photo = fetchedResultsController.object(at: indexPath)
 		
 		if let imageData = photo.imageData {
 			cell.imageView.image = UIImage(data: imageData)
@@ -132,12 +130,12 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 			assignCellNewPhoto(cell, photo: photo)
 			stack.save()
 		}
-
+		
 		setCellAlphaValue(cell, indexPath: indexPath)
 		return cell
 	}
 	
-	func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 		let numberOfItems: Int
 		guard let fetchedItems = fetchedResultsController.fetchedObjects?.count else {
 			numberOfItems = 0
@@ -147,21 +145,21 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 		return numberOfItems
 	}
 	
-	func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-		let cell = collectionView.cellForItemAtIndexPath(indexPath) as! PhotoCell
-		if let index = selectedItems.indexOf(indexPath) {
-			selectedItems.removeAtIndex(index)
+	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+		let cell = collectionView.cellForItem(at: indexPath) as! PhotoCell
+		if let index = selectedItems.index(of: indexPath) {
+			selectedItems.remove(at: index)
 		} else {
 			selectedItems.append(indexPath)
 		}
 		setCellAlphaValue(cell, indexPath: indexPath)
 	}
 	
-	func assignCellNewPhoto(cell: PhotoCell, photo: Photo) {
+	func assignCellNewPhoto(_ cell: PhotoCell, photo: Photo) {
 		cell.imageView.image = UIImage(named: "placeholder")
 		cell.activityIndicator.startAnimating()
-		cell.activityIndicator.hidden = false
-		let url = NSURL(string: photo.url)!
+		cell.activityIndicator.isHidden = false
+		let url = URL(string: photo.url)!
 		
 		let task = FlickrClient.sharedInstance.downloadDataWithURL(url) { (data, error) in
 			if let error = error {
@@ -171,7 +169,7 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 					photo.imageData = data!
 					let image = UIImage(data: data!)
 					cell.activityIndicator.stopAnimating()
-					cell.activityIndicator.hidden = true
+					cell.activityIndicator.isHidden = true
 					cell.imageView.image = image
 				}
 			}
@@ -179,62 +177,62 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 		cell.task = task
 	}
 	
-	func setCellAlphaValue(cell: PhotoCell, indexPath: NSIndexPath) {
-		if selectedItems.indexOf(indexPath) != nil {
+	func setCellAlphaValue(_ cell: PhotoCell, indexPath: IndexPath) {
+		if selectedItems.index(of: indexPath) != nil {
 			cell.imageView.alpha = 0.55
 		} else {
 			cell.imageView.alpha = 1.0
 		}
 	}
-
+	
 }
 
 
 
 extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate {
 	// MARK: FetchedResultsController Delegate Methods
-	func controllerWillChangeContent(controller: NSFetchedResultsController) {
+	func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
 	}
-
-	func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+	
+	func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 		
 		switch type {
-		case .Insert:
+		case .insert:
 			blockOperations.append(
-				NSBlockOperation(){ [weak self] in
+				BlockOperation(){ [weak self] in
 					if let this = self {
-						this.collectionView!.insertItemsAtIndexPaths([newIndexPath!])
+						this.collectionView!.insertItems(at: [newIndexPath!])
 					}
 				}
 			)
-		case .Update:
+		case .update:
 			blockOperations.append(
-				NSBlockOperation() { [weak self] in
+				BlockOperation() { [weak self] in
 					if let this = self {
-						this.collectionView!.reloadItemsAtIndexPaths([indexPath!])
+						this.collectionView!.reloadItems(at: [indexPath!])
 					}
 				}
 			)
-		case .Delete:
+		case .delete:
 			blockOperations.append(
-				NSBlockOperation() { [weak self] in
+				BlockOperation() { [weak self] in
 					if let this = self {
-						this.collectionView!.deleteItemsAtIndexPaths([indexPath!])
+						this.collectionView!.deleteItems(at: [indexPath!])
 					}
 				}
 			)
-		case .Move:
+		case .move:
 			blockOperations.append(
-				NSBlockOperation() { [weak self] in
+				BlockOperation() { [weak self] in
 					if let this = self {
-						this.collectionView!.moveItemAtIndexPath(indexPath!, toIndexPath: newIndexPath!)
+						this.collectionView!.moveItem(at: indexPath!, to: newIndexPath!)
 					}
 				}
 			)
 		}
 	}
 	
-	func controllerDidChangeContent(controller: NSFetchedResultsController) {
+	func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
 		
 		// Source: https://gist.github.com/iwasrobbed/5528897
 		let batchUpdatesToPerform = {() -> Void in
@@ -243,7 +241,7 @@ extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate {
 			}
 		}
 		collectionView!.performBatchUpdates(batchUpdatesToPerform) { (finished) -> Void in
-			self.blockOperations.removeAll(keepCapacity: false)
+			self.blockOperations.removeAll(keepingCapacity: false)
 		}
 	}
 }
