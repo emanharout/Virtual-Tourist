@@ -4,6 +4,8 @@ import UIKit
 import MapKit
 import CoreData
 
+// TODO: Check if performOnMain will work on context save, if not, see if you can remove it entirely
+
 class PhotoAlbumViewController: UIViewController {
 	
 	@IBOutlet weak var mapView: MKMapView!
@@ -77,6 +79,7 @@ class PhotoAlbumViewController: UIViewController {
 				fetchedResultsController.managedObjectContext.delete(photo)
 			}
 			getPhotoURLs()
+			
 		} else {
 			for indexPath in selectedItems {
 				let photo = fetchedResultsController.object(at: indexPath)
@@ -90,7 +93,7 @@ class PhotoAlbumViewController: UIViewController {
 	// MARK: UI-Related Functions
 	func makeRegionWithAnnotation(_ annotation: MKAnnotation) -> MKCoordinateRegion {
 		let center = annotation.coordinate
-		let span = MKCoordinateSpanMake(0.002, 0.002)
+		let span = MKCoordinateSpanMake(0.1, 0.1)
 		let region = MKCoordinateRegion(center: center, span: span)
 		return region
 	}
@@ -105,12 +108,6 @@ class PhotoAlbumViewController: UIViewController {
 	func setupMapView() {
 		mapView.addAnnotation(pin)
 		mapView.region = makeRegionWithAnnotation(pin)
-	}
-	
-	
-	func performOnMainThread(_ block: @escaping ()->Void) {
-		let mainQueue = DispatchQueue.main
-		mainQueue.async(execute: block)
 	}
 }
 
@@ -165,7 +162,8 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 			if let error = error {
 				print(error.userInfo["NSUnderlyingErrorKey"])
 			} else {
-				self.performOnMainThread(){
+				let mainQueue = DispatchQueue.main
+				mainQueue.async {
 					photo.imageData = data!
 					let image = UIImage(data: data!)
 					cell.activityIndicator.stopAnimating()
