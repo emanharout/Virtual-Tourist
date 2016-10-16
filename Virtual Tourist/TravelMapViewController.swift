@@ -31,7 +31,7 @@ class TravelMapViewController: UIViewController {
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		
-		// Mapview span/altitude values are automatically modified and snaps to other levels until view appears, must set region here
+		// Mapview span/altitude values are automatically modified by system and snaps to other levels until view appears, must set region here in order to have final values untampered
 		if !mapPosition.mapPositionWasSet {
 			mapPosition.setMapToLastPosition()
 		}
