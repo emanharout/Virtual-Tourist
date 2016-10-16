@@ -79,7 +79,6 @@ class PhotoAlbumViewController: UIViewController {
 				fetchedResultsController.managedObjectContext.delete(photo)
 			}
 			getPhotoURLs()
-			
 		} else {
 			for indexPath in selectedItems {
 				let photo = fetchedResultsController.object(at: indexPath)
