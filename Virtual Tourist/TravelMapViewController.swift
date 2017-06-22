@@ -135,15 +135,15 @@ extension TravelMapViewController: MKMapViewDelegate {
   
   func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
     
-    var annotView = mapView.dequeueReusableAnnotationView(withIdentifier: "pinView") as? MKPinAnnotationView
+    var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: "pinView") as? MKPinAnnotationView
     
-    if annotView == nil {
-      annotView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "pinView")
-      annotView?.animatesDrop = true
-      return annotView
+    if annotationView == nil {
+      annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "pinView")
+      annotationView?.animatesDrop = true
+      return annotationView
     }
-    annotView?.annotation = annotation
-    annotView?.animatesDrop = true
-    return annotView
+    annotationView?.annotation = annotation
+    annotationView?.animatesDrop = true
+    return annotationView
   }
 }

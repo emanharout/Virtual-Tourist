@@ -187,8 +187,7 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 
 extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate {
   // MARK: FetchedResultsController Delegate Methods
-  func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-  }
+  func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) { }
   
   func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
     

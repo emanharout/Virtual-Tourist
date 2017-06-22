@@ -77,5 +77,4 @@ extension FlickrClient {
     static let URL = "url_m"
     static let MaxPage = "pages"
   }
-  
 }

@@ -46,7 +46,6 @@ class MapPosition: NSObject {
     UserDefaults.standard.synchronize()
   }
   
-  
   init(mapView: MKMapView, storedMapRegion: MKCoordinateRegion?) {
     self.mapView = mapView
     self.storedMapRegion = nil
