@@ -9,9 +9,9 @@ import Foundation
 import CoreData
 
 extension Photo {
-
-    @NSManaged var imageData: Data?
-	@NSManaged var url: String
-    @NSManaged var pin: Pin
-
+  
+  @NSManaged var imageData: Data?
+  @NSManaged var url: String
+  @NSManaged var pin: Pin
+  
 }
