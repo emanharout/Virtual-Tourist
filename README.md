@@ -6,4 +6,4 @@ View images from around the world simply by dropping a pin at your desired locat
 3. Long tap anywhere on the map to drop a pin
 4. Select the pin to view photos from that general area
 
-![Alt text](/Virtual Tourist/Assets.xcassets/Virtual Tourist 1.imageset/Virtual Tourist 1.jpg?raw=true "Optional Title")
+![Alt text](/Virtual\ Tourist/Assets.xcassets/Virtual\ Tourist 1.imageset/Virtual\ Tourist 1.jpg?raw=true "Optional Title")
