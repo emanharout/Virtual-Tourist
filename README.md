@@ -1,7 +1,7 @@
 # Virtual-Tourist
 View images from around the world simply by dropping a pin at your desired location.
 
-![Virtual Tourist Gallery Shot](Virtual-Tourist/Readme_Assets/Virtual_Tourist_Gallery.jpg)
+![VirtualTourist](Readme_Assets/Virtual_Tourist_Gallery.jpg?raw=true "Virtual Tourist Gallery")
 
 1. Simply download or clone the project
 2. Run it in Xcode either through the simulator or on your iPhone
