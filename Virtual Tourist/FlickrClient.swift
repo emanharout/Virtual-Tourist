@@ -15,7 +15,7 @@ class FlickrClient: Client {
 		let task = session.dataTask(with: request, completionHandler: { (data, response, error) in
 			
 			guard error == nil else {
-				print("Error: \(error?.localizedDescription)")
+				print("Error: \(String(describing: error?.localizedDescription))")
 				return
 			}
 			

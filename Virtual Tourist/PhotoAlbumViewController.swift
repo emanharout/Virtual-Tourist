@@ -60,7 +60,7 @@ class PhotoAlbumViewController: UIViewController {
 	func getPhotoURLs() {
 		FlickrClient.sharedInstance.getPhotoURLsWithLocation(pin.latitude, longitude: pin.longitude, pageNumber: pageCounter) { (result, pages, error) in
 			if let error = error {
-				print(error.userInfo["NSUnderlyingErrorKey"])
+				print(error.userInfo["NSUnderlyingErrorKey"] as Any)
 			} else if let result = result, let pages = pages {
 				for i in result {
 					let url = String(describing: i)
@@ -159,7 +159,7 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 		
 		let task = FlickrClient.sharedInstance.downloadDataWithURL(url) { (data, error) in
 			if let error = error {
-				print(error.userInfo["NSUnderlyingErrorKey"])
+				print(error.userInfo["NSUnderlyingErrorKey"] as Any)
 			} else {
 				let mainQueue = DispatchQueue.main
 				mainQueue.async {

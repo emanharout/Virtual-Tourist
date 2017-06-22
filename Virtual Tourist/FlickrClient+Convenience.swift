@@ -9,7 +9,7 @@ extension FlickrClient {
 	func downloadDataWithURL(_ photoURL: URL, completionHandler: @escaping (_ data: Data?, _ error: NSError?)->Void) -> URLSessionDataTask {
 		let task = URLSession.shared.dataTask(with: photoURL, completionHandler: {(data, response, error) in
 			guard error == nil else {
-				print("Error: \(error?.localizedDescription)")
+				print("Error: \(String(describing: error?.localizedDescription))")
 				completionHandler(nil, error as NSError?)
 				return
 			}
